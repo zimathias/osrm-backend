@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -e -u
 set -o pipefail
 
 if [[ $(uname -s) == 'Linux' ]]; then
