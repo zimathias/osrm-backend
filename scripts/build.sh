@@ -15,6 +15,3 @@ cmake ../ ${CMAKEOPTIONS} -DCMAKE_INSTALL_PREFIX=${MASON_HOME} \
   -DCMAKE_EXE_LINKER_FLAGS="${LINK_FLAGS}"
 make -j${JOBS}
 make install
-
-cd ../
-echo "success"
