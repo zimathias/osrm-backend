@@ -7,6 +7,7 @@ function dep() {
 
 # default to clang
 CXX=${CXX:-clang++}
+COVERAGE=${COVERAGE:-false}
 
 function all_deps() {
     dep cmake 3.2.2 &
