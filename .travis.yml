@@ -33,7 +33,7 @@ before_install:
 - export COVERAGE=${COVERAGE:-false}
 
 install:
- - ./scripts/${BUILD_TYPE}-install.sh
+ - source ./scripts/${BUILD_TYPE}-install.sh
  - if [[ $(uname -s) == 'Linux' ]]; then sudo apt-get -q install rubygems; fi;
 
 before_script:
@@ -63,7 +63,7 @@ env:
     - OSRM_TIMEOUT=60
 cache:
  - bundler
- - apt
+ # - apt
  - mason_packages
 notifications:
  slack: mapbox:PRWTij9HAHnj6pQMDGjqzbfW
