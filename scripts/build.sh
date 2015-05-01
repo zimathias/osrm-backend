@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -e -u
+set -o pipefail
+
 rm -rf build
 mkdir -p build
 cd build

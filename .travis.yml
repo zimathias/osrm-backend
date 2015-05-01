@@ -76,4 +76,4 @@ notifications:
     - patrick@mapbox.com
   email:
     on_success: change
-    on_failure: always
+    on_failure: never       # revert this once it works
