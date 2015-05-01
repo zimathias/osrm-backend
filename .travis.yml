@@ -1,54 +1,69 @@
 language: cpp
-compiler:
-  - gcc
-#  - clang
-# Make sure CMake is installed
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+    #   - gdb
+
+matrix:
+  include:
+    # Linux/Debian
+    - os: linux
+      compiler: gcc
+      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5000 OSRM_TIMEOUT=60
+      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5010 OSRM_TIMEOUT=60
+      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5020 OSRM_TIMEOUT=60
+    # Coverage
+    - os: osx
+      compiler: clang
+      env: COVERAGE=true BUILD_TYPE=OSX_COVERAGE MASON=true OSRM_PORT=5000 OSRM_TIMEOUT=60
+    # Linux
+    - os: linux
+      compiler: gcc
+      env: BUILD_TYPE=MASON MASON=true OSRM_PORT=5000 OSRM_TIMEOUT=60
+    # OS X
+    - os: osx
+      compiler: clang
+      env: BUILD_TYPE=MASON MASON=true OSRM_PORT=5000 OSRM_TIMEOUT=60
+
+before_install:
+- export COVERAGE=${COVERAGE:-false}
+
 install:
- - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
- - sudo add-apt-repository -y ppa:boost-latest/ppa
- - sudo apt-get update >/dev/null
- - sudo apt-get -q install protobuf-compiler libprotoc-dev libprotobuf7 libprotobuf-dev libbz2-dev libstxxl-dev libstxxl1 libxml2-dev libzip-dev lua5.1 liblua5.1-0-dev rubygems libtbb-dev
- - sudo apt-get -q install g++-4.8
- - sudo apt-get install libboost1.54-all-dev
- - sudo apt-get install libgdal-dev
- # luabind
- - curl https://gist.githubusercontent.com/DennisOSRM/f2eb7b948e6fe1ae319e/raw/install-luabind.sh | sudo bash
- # osmosis
- - curl -s https://gist.githubusercontent.com/DennisOSRM/803a64a9178ec375069f/raw/ | sudo bash
- # cmake
- - curl -s https://gist.githubusercontent.com/DennisOSRM/5fad9bee5c7f09fd7fc9/raw/ | sudo bash
- # osmpbf library
- - curl -s https://gist.githubusercontent.com/DennisOSRM/13b1b4fe38a57ead850e/raw/install_osmpbf.sh | sudo bash
+ - ./scripts/${BUILD_TYPE}-install.sh
+ - if [[ $(uname -s) == 'Linux' ]]; then sudo apt-get -q install rubygems; fi;
+
 before_script:
  - rvm use 1.9.3
  - gem install bundler
  - bundle install
+
  - mkdir build
  - cd build
- - cmake .. $CMAKEOPTIONS -DBUILD_TOOLS=1
+ - cmake ../ $CMAKEOPTIONS -DBUILD_TOOLS=1
 script:
  - make
  - make tests
  - make benchmarks
  - ./datastructure-tests
+ - ./algorithm-tests
  - cd ..
  - cucumber -p verify
-after_script:
-# - cd ..
-# - cucumber -p verify
+ - if [[ ${COVERAGE} == true ]]; then ./mason_packages/.link/bin/cpp-coveralls --exclude mason_packages --exclude scripts --exclude cmake --exclude osx-10.10 --exclude third_party --exclude test --build-root build --gcov-options '\-lp' --exclude doc --exclude build; fi;
 branches:
   only:
     - master
     - develop
+    - masonize
 cache:
-- bundler
-- apt
-env:
- - CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5000 OSRM_TIMEOUT=60
- - CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5010 OSRM_TIMEOUT=60
- - CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5020 OSRM_TIMEOUT=60
+ - bundler
+ - apt
+ - mason_packages
 notifications:
- slack: mapbox:4A6euphDwfxAQnhLurXbu6A1
+ slack: mapbox:PRWTij9HAHnj6pQMDGjqzbfW
  irc:
   channels:
     - irc.oftc.net#osrm
@@ -58,7 +73,7 @@ notifications:
   skip_join: false
 
   recipients:
-    - dennis@mapbox.com
+    - patrick@mapbox.com
   email:
     on_success: change
     on_failure: always

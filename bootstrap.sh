@@ -54,28 +54,11 @@ function main() {
     export LIBRARY_PATH="${MASON_HOME}/lib"
 
     LINK_FLAGS=""
-    LDFLAGS=""
+    if [[ ${COVERAGE} == false ]]; then LDFLAGS=""; fi;
     if [[ $(uname -s) == 'Linux' ]]; then
         LINK_FLAGS="${LINK_FLAGS} "'-Wl,-z,origin -Wl,-rpath=\$ORIGIN'
         export LDFLAGS="${LINK_FLAGS}"
     fi
-
-    rm -rf build
-    mkdir -p build
-    cd build
-    cmake ../ -DCMAKE_INSTALL_PREFIX=${MASON_HOME} \
-      -DCMAKE_CXX_COMPILER="$CXX" \
-      -DBoost_NO_SYSTEM_PATHS=ON \
-      -DTBB_INSTALL_DIR=${MASON_HOME} \
-      -DCMAKE_INCLUDE_PATH=${MASON_HOME}/include \
-      -DCMAKE_LIBRARY_PATH=${MASON_HOME}/lib \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_EXE_LINKER_FLAGS="${LINK_FLAGS}"
-    make -j${JOBS}
-    make install
-
-    cd ../
-    echo "success"
 }
 
 main
