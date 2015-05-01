@@ -13,21 +13,21 @@ matrix:
     # Linux/Debian
     - os: linux
       compiler: gcc
-      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5000
-      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5010
-      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5020
+      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8" -DBUILD_TOOLS=1 OSRM_PORT=5000
+      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-4.8" -DBUILD_TOOLS=1 OSRM_PORT=5010
+      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TOOLS=1 -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5020
     # Coverage
     - os: osx
       compiler: clang
-      env: COVERAGE=true BUILD_TYPE=OSX_COVERAGE MASON=true OSRM_PORT=5000 OSRM_TIMEOUT=60
+      env: COVERAGE=true BUILD_TYPE=OSX_COVERAGE MASON=true OSRM_PORT=5000
     # Linux
     - os: linux
       compiler: gcc
-      env: BUILD_TYPE=MASON MASON=true OSRM_PORT=5000 OSRM_TIMEOUT=60
+      env: BUILD_TYPE=MASON MASON=true OSRM_PORT=5000
     # OS X
     - os: osx
       compiler: clang
-      env: BUILD_TYPE=MASON MASON=true OSRM_PORT=5000 OSRM_TIMEOUT=60
+      env: BUILD_TYPE=MASON MASON=true OSRM_PORT=5000
 
 before_install:
 - export COVERAGE=${COVERAGE:-false}
@@ -41,9 +41,7 @@ before_script:
  - gem install bundler
  - bundle install
 
- - mkdir build
- - cd build
- - cmake ../ $CMAKEOPTIONS -DBUILD_TOOLS=1
+ - source scripts/build.sh
 script:
  - make
  - make tests

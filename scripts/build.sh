@@ -5,7 +5,7 @@ set -o pipefail
 rm -rf build
 mkdir -p build
 cd build
-cmake ../ -DCMAKE_INSTALL_PREFIX=${MASON_HOME} \
+cmake ../ ${CMAKEOPTIONS} -DCMAKE_INSTALL_PREFIX=${MASON_HOME} \
   -DCMAKE_CXX_COMPILER="$CXX" \
   -DBoost_NO_SYSTEM_PATHS=ON \
   -DTBB_INSTALL_DIR=${MASON_HOME} \
