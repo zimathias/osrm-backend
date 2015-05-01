@@ -38,9 +38,7 @@ function main() {
     fi
     export MASON_DIR=$(pwd)/.mason
     export MASON_HOME=$(pwd)/mason_packages/.link
-    if [[ ! -d ${MASON_HOME} ]]; then
-        all_deps
-    fi
+    all_deps
     export PATH=${MASON_HOME}/bin:$PATH
     export PKG_CONFIG_PATH=${MASON_HOME}/lib/pkgconfig
 
