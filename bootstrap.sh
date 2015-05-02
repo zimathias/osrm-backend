@@ -11,8 +11,8 @@ COVERAGE=${COVERAGE:-false}
 
 function all_deps() {
     dep cmake 3.2.2 &
-    dep lua 5.1.0 &
-    dep luabind_lua51 dev &
+    dep lua 5.2.0 &
+    dep luabind_lua520 dev &
     dep boost 1.57.0 &
     dep boost_libsystem 1.57.0 &
     dep boost_libthread 1.57.0 &
