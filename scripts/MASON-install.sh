@@ -4,7 +4,7 @@ set -o pipefail
 
 source ./bootstrap.sh
 
-if [[ ${COVERAGE} == true ]];
+if [[ ${COVERAGE} == true ]]; then
     PYTHONUSERBASE=$(pwd)/mason_packages/.link pip install --user cpp-coveralls;
     export LDFLAGS="--coverage"
     export CXXFLAGS="--coverage"
