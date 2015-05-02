@@ -52,11 +52,10 @@ function main() {
     export CPLUS_INCLUDE_PATH="${MASON_HOME}/include"
     export LIBRARY_PATH="${MASON_HOME}/lib"
 
-    LINK_FLAGS=""
-    if [[ ${COVERAGE} == false ]]; then LDFLAGS=""; fi;
     if [[ $(uname -s) == 'Linux' ]]; then
-        LINK_FLAGS="${LINK_FLAGS} "'-Wl,-z,origin -Wl,-rpath=\$ORIGIN'
-        export LDFLAGS="${LINK_FLAGS}"
+        export LD_LIBRARY_PATH="${LIBRARY_PATH}"
+    elif [[ $(uname -s) == 'Darwin' ]]; then
+        export DYLD_LIBRARY_PATH="${LIBRARY_PATH}"
     fi
 }
 

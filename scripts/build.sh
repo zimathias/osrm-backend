@@ -18,5 +18,3 @@ if [[ ${CMAKEOPTIONS} == false ]]; then
 else
     cmake ../ ${CMAKEOPTIONS} -DBUILD_TOOLS=1
 fi
-make -j${JOBS}
-make install
