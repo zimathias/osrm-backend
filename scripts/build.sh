@@ -16,7 +16,7 @@ if [[ ${CMAKEOPTIONS} == false ]]; then
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_EXE_LINKER_FLAGS="${LINK_FLAGS}"
 else
-    cmake ${CMAKEOPTIONS} -DBUILD_TOOLS=1
+    cmake ../ ${CMAKEOPTIONS} -DBUILD_TOOLS=1
 fi
 make -j${JOBS}
 make install
