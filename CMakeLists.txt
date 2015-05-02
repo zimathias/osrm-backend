@@ -145,9 +145,9 @@ if(CMAKE_BUILD_TYPE MATCHES Release)
   endif()
 endif()
 
-# if(NOT WIN32)
-#   add_definitions(-DBOOST_TEST_DYN_LINK)
-# endif()
+if(NOT WIN32)
+   add_definitions(-DBOOST_TEST_DYN_LINK)
+endif()
 
 # Configuring compilers
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")

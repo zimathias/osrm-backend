@@ -20,7 +20,7 @@ function all_deps() {
     dep boost_libprogram_options 1.57.0 &
     dep boost_libregex 1.57.0 &
     dep boost_libiostreams 1.57.0 &
-    dep boost_libtest 1.57.0 &
+    dep boost_libtest_shared 1.57.0 &
     dep boost_libdate_time 1.57.0 &
     dep expat 2.1.0 &
     dep stxxl 1.4.1 &
