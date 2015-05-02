@@ -51,7 +51,7 @@ script:
  - ./algorithm-tests
  - cd ..
  - cucumber -p verify
- - if [[ ${COVERAGE} == true ]]; then ./mason_packages/.link/bin/cpp-coveralls --exclude mason_packages --exclude scripts --exclude cmake --exclude osx-10.10 --exclude third_party --exclude test --build-root build --gcov-options '\-lp' --exclude doc > /dev/null; fi;
+ - if [[ ${COVERAGE} == true ]]; then ./mason_packages/.link/bin/cpp-coveralls --exclude mason_packages --exclude build/CMakeCXXCompilerId.cpp --exclude scripts --exclude cmake --exclude osx-10.10 --exclude third_party --exclude test --build-root build --gcov-options '\-lp' --exclude doc > /dev/null; fi;
 branches:
   only:
     - master
