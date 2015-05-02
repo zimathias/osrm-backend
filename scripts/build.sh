@@ -13,7 +13,15 @@ if [[ ${CMAKEOPTIONS} == false ]]; then
         -DTBB_INSTALL_DIR=${MASON_HOME} \
         -DCMAKE_INCLUDE_PATH=${MASON_HOME}/include \
         -DCMAKE_LIBRARY_PATH=${MASON_HOME}/lib \
-        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_BUILD_TYPE=Release || true
 else
-    cmake ../ ${CMAKEOPTIONS} -DBUILD_TOOLS=1
+    cmake ../ ${CMAKEOPTIONS} -DBUILD_TOOLS=1 || true
+fi
+
+if [[ -f CMakeFiles/CMakeOutput.log ]]; then
+    cat CMakeFiles/CMakeOutput.log
+fi
+
+if [[ -f CMakeFiles/CMakeError.log ]]; then
+    cat CMakeFiles/CMakeError.log
 fi
