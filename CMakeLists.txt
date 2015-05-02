@@ -123,7 +123,7 @@ if(CMAKE_BUILD_TYPE MATCHES Release)
   message(STATUS "Configuring OSRM in release mode")
   # Check if LTO is available
   set(LTO_FLAGS "")
-  check_cxx_compiler_flag("-flto" LTO_AVAILABLE)
+  #check_cxx_compiler_flag("-flto" LTO_AVAILABLE)
   if(LTO_AVAILABLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
     set(CHECK_LTO_SRC "int main(){return 0;}")
