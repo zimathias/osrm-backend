@@ -19,15 +19,15 @@ matrix:
     # Coverage
     - os: osx
       compiler: clang
-      env: COVERAGE=true BUILD_TYPE=OSX_COVERAGE MASON=true OSRM_PORT=5000
+      env: COVERAGE=true BUILD_TYPE=OSX_COVERAGE OSRM_PORT=5000
     # Linux
     - os: linux
       compiler: gcc
-      env: BUILD_TYPE=MASON MASON=true OSRM_PORT=5000
+      env: BUILD_TYPE=MASON OSRM_PORT=5000
     # OS X
     - os: osx
       compiler: clang
-      env: BUILD_TYPE=MASON MASON=true OSRM_PORT=5000
+      env: BUILD_TYPE=MASON OSRM_PORT=5000
 
 before_install:
 - export COVERAGE=${COVERAGE:-false}
