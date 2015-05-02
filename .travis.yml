@@ -14,7 +14,7 @@ matrix:
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5000 JOBS=2
-      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5010 JOBS=2
+      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5010 JOBS=1
       env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8" -DBUILD_SHARED_LIBS=ON" OSRM_PORT=5020 JOBS=2
     # Coverage
     - os: osx
@@ -51,7 +51,7 @@ script:
  - ./algorithm-tests
  - cd ..
  - cucumber -p verify
- - if [[ ${COVERAGE} == true ]]; then ./mason_packages/.link/bin/cpp-coveralls --exclude mason_packages --exclude scripts --exclude cmake --exclude osx-10.10 --exclude third_party --exclude test --build-root build --gcov-options '\-lp' --exclude doc; fi;
+ - if [[ ${COVERAGE} == true ]]; then ./mason_packages/.link/bin/cpp-coveralls --exclude mason_packages --exclude scripts --exclude cmake --exclude osx-10.10 --exclude third_party --exclude test --build-root build --gcov-options '\-lp' --exclude doc > /dev/null; fi;
 branches:
   only:
     - master
@@ -59,7 +59,6 @@ branches:
     - masonize
 env:
   global:
-    - JOBS: "1"
     - OSRM_TIMEOUT: "60"
 cache:
  - bundler
