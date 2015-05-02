@@ -43,7 +43,7 @@ before_script:
  - source scripts/build.sh
 script:
  - make -j1
- - make tests
+ - make tests VERBOSE=1
  - make benchmarks
  - ./datastructure-tests
  - ./algorithm-tests
