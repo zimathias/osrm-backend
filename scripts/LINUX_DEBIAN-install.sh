@@ -12,8 +12,6 @@ sudo apt-get install libgdal-dev
 echo "installing custom builds:"
 # luabind
 curl https://gist.githubusercontent.com/DennisOSRM/f2eb7b948e6fe1ae319e/raw/install-luabind.sh | sudo bash
-# osmosis
-curl -s https://gist.githubusercontent.com/DennisOSRM/803a64a9178ec375069f/raw/ | sudo bash
 # cmake
 curl -s https://gist.githubusercontent.com/DennisOSRM/5fad9bee5c7f09fd7fc9/raw/ | sudo bash
 # osmpbf library

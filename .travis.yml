@@ -34,6 +34,8 @@ before_install:
 
 install:
  - source ./scripts/${BUILD_TYPE}-install.sh
+ # osmosis build
+ - curl -s https://gist.githubusercontent.com/DennisOSRM/803a64a9178ec375069f/raw/ | sudo bash
 
 before_script:
  - rvm use 1.9.3
