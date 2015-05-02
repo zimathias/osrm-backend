@@ -14,7 +14,10 @@ if [[ ${COVERAGE} == true ]];
         export CXX="g++-4.8"
         export CC="gcc-4.8"
         export PYTHONPATH=$(pwd)/mason_packages/.link/lib/python2.7/site-packages
+        # osmosis
+        curl -s https://gist.githubusercontent.com/DennisOSRM/803a64a9178ec375069f/raw/ | sudo bash
     else
         export PYTHONPATH=$(pwd)/mason_packages/.link/lib/python/site-packages
+        brew install osmosis
     fi
 fi
