@@ -58,7 +58,8 @@ branches:
     - masonize
 env:
   global:
-    - OSRM_TIMEOUT=60
+    - JOBS: "1"
+    - OSRM_TIMEOUT: "60"
 cache:
  - bundler
  # - apt
