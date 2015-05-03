@@ -42,6 +42,7 @@ matrix:
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=MASON JOBS=2
+      sudo: false
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
