@@ -58,8 +58,7 @@ before_install:
    fi
  # install deps
  - source ./scripts/${BUILD_TYPE}-install.sh
- # osmosis build
- - if [[ $(uname -s) == 'Darwin' ]]; then brew install osmosis; else curl -s https://gist.githubusercontent.com/DennisOSRM/803a64a9178ec375069f/raw/ | sudo bash; fi
+ - source ./scripts/install_osmosis.sh
 
 install:
  - source scripts/build.sh
