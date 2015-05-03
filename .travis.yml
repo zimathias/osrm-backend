@@ -67,7 +67,10 @@ before_install:
        echo 'ccache g++-4.8 "$@"' >> ./cxx_compiler;
        chmod +x ./cxx_compiler;
        export CXX="$(pwd)/cxx_compiler";
-       export CC="$(pwd)/cxx_compiler";
+       echo '#!/bin/bash' > ./c_compiler;
+       echo 'ccache gcc-4.8 "$@"' >> ./c_compiler;
+       chmod +x ./c_compiler;
+       export CC="$(pwd)/c_compiler";
      else
        export CXX="g++-4.8";
        export CC="gcc-4.8";
