@@ -6,6 +6,7 @@ set -o pipefail
 CMAKEOPTIONS=${CMAKEOPTIONS:-""}
 TARGET=${TARGET:-Release}
 COVERAGE=${COVERAGE:-false}
+CXX=${CXX:-g++}
 
 if [[ ${COVERAGE} == true ]]; then
     PYTHONUSERBASE=$(pwd)/mason_packages/.link pip install --user cpp-coveralls;
@@ -28,7 +29,7 @@ CMAKE_ARGS="../ -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=${TARGET} ${CMAKE
 
 set -x
 # extra args for mason build to ensure deps inside ./mason_packages are used
-if [[ ${BUILD_TYPE} == "MASON" ]]; then
+if [[ -d ../mason_packages ]]; then
     CMAKE_ARGS="${CMAKE_ARGS} -DBoost_NO_SYSTEM_PATHS=ON "
     CMAKE_ARGS="${CMAKE_ARGS} -DTBB_INSTALL_DIR=${MASON_HOME} "
     CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_INCLUDE_PATH=${MASON_HOME}/include "
