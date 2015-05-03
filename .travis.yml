@@ -5,7 +5,11 @@ env:
     - OSRM_TIMEOUT: 60
     - OSRM_PORT: 5000
 
-sudo: false
+# sudo:false not fully viable util:
+# https://github.com/travis-ci/travis-ci/issues/3847
+# https://github.com/travis-ci/travis-ci/issues/3846
+# https://github.com/travis-ci/travis-ci/issues/3759
+sudo: required
 
 git:
   depth: 10
@@ -19,7 +23,6 @@ cache:
 matrix:
   include:
     # Linux + apt packages + extra tools
-    # Not viable until https://github.com/travis-ci/travis-ci/issues/3847 and https://github.com/travis-ci/travis-ci/issues/3846
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DBUILD_SHARED_LIBS=ON -DBUILD_TOOLS=1" JOBS=2
