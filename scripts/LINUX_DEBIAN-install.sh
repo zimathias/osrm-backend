@@ -3,6 +3,11 @@
 set -e -u
 set -o pipefail
 
+TARGET=${TARGET:-Release}
+CXX=${CXX:-g++}
+LD_LIBRARY_PATH=${LD_LIBRARY_PATH:=""}
+JOBS=${JOBS:=1}
+
 # Intentionally not using mason here so that we
 # replicate a system where mostly apt packages are used
 # and only minimal source compiles
