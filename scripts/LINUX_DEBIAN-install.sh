@@ -19,3 +19,5 @@ curl -s https://gist.githubusercontent.com/DennisOSRM/5fad9bee5c7f09fd7fc9/raw/ 
 curl -s https://gist.githubusercontent.com/DennisOSRM/13b1b4fe38a57ead850e/raw/install_osmpbf.sh | sudo bash
 
 echo "install success"
+
+set +e +u

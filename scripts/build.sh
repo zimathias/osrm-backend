@@ -35,3 +35,5 @@ if [[ ${BUILD_TYPE} == "MASON" ]]; then
 fi
 
 cmake ${CMAKE_ARGS}
+
+set +e +u

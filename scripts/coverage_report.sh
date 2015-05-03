@@ -18,3 +18,5 @@ if [[ ${COVERAGE} == true ]]; then
         --exclude test \
         --exclude doc > /dev/null
 fi
+
+set +e +u
