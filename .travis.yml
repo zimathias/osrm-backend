@@ -5,12 +5,6 @@ env:
     - OSRM_TIMEOUT: 60
     - OSRM_PORT: 5000
 
-# sudo:false not fully viable util:
-# https://github.com/travis-ci/travis-ci/issues/3847
-# https://github.com/travis-ci/travis-ci/issues/3846
-# https://github.com/travis-ci/travis-ci/issues/3759
-sudo: required
-
 git:
   depth: 10
   submodules: false
@@ -20,12 +14,18 @@ cache:
   - mason_packages
   - vendor/bundle
 
+# sudo:false not fully viable util:
+# https://github.com/travis-ci/travis-ci/issues/3847
+# https://github.com/travis-ci/travis-ci/issues/3846
+# https://github.com/travis-ci/travis-ci/issues/3759
+
 matrix:
   include:
     # Linux + apt packages + extra tools
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DBUILD_SHARED_LIBS=ON -DBUILD_TOOLS=1" JOBS=2
+      sudo: required
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test','boost-latest']
@@ -34,6 +34,7 @@ matrix:
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=LINUX_DEBIAN TARGET=Debug JOBS=1
+      sudo: required
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test','boost-latest']
@@ -41,7 +42,8 @@ matrix:
     # Linux + mason packages
     - os: linux
       compiler: gcc
-      env: BUILD_TYPE=MASON JOBS=2
+      env: BUILD_TYPE=MASON JOBS=6
+      sudo: false
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -50,16 +52,20 @@ matrix:
     - os: osx
       compiler: clang
       env: BUILD_TYPE=MASON COVERAGE=true TARGET=Debug JOBS=4
+      sudo: false
     # OS X + mason packages
     - os: osx
       compiler: clang
       env: BUILD_TYPE=MASON JOBS=6
+      sudo: false
 
 before_install:
  - if [[ $(uname -s) == 'Linux' ]]; then
-    export CXX="g++-4.8";
-    export CC="gcc-4.8";
-    sudo apt-get install -y libtbb-dev libboost1.55-all-dev libstxxl-dev libstxxl1;
+     export CXX="g++-4.8";
+     export CC="gcc-4.8";
+   fi
+ - if [[ ${BUILD_TYPE} == 'LINUX_DEBIAN' ]]; then
+     sudo apt-get install -y libtbb-dev libboost1.55-all-dev libstxxl-dev libstxxl1;
    fi
  # install deps
  - source ./scripts/${BUILD_TYPE}-install.sh
