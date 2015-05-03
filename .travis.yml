@@ -9,7 +9,7 @@ env:
 # https://github.com/travis-ci/travis-ci/issues/3847
 # https://github.com/travis-ci/travis-ci/issues/3846
 # https://github.com/travis-ci/travis-ci/issues/3759
-#sudo: required
+sudo: required
 
 git:
   depth: 10
@@ -26,25 +26,22 @@ matrix:
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DBUILD_SHARED_LIBS=ON -DBUILD_TOOLS=1" JOBS=2
-      sudo: required
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test','boost-latest']
-          packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.55-all-dev','libgdal1-dev']
+          packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libgdal1-dev']
     # Linux + apt packages + debug build
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=LINUX_DEBIAN TARGET=Debug JOBS=1
-      sudo: required
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test','boost-latest']
-          packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.55-all-dev','libgdal1-dev']
+          packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libgdal1-dev']
     # Linux + mason packages
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=MASON JOBS=2
-      sudo: false
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -62,6 +59,7 @@ before_install:
  - if [[ $(uname -s) == 'Linux' ]]; then
     export CXX="g++-4.8";
     export CC="gcc-4.8";
+    sudo apt-get install -y libtbb-dev libboost1.55-all-dev libstxxl-dev libstxxl1;
    fi
  # install deps
  - source ./scripts/${BUILD_TYPE}-install.sh
