@@ -6,64 +6,85 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
-    #   - gdb
+      - rubygems
+
+env:
+  global:
+    - OSRM_TIMEOUT: 60
+    - OSRM_PORT: 5000
+
+# we require sudo currently to install apt packages
+# the trouble is that while we could install the apt packages
+# using the sudo free "addons" method above that would run
+# for every build (even the mason builds that do not need any
+# apt packages). We do not want to pay the time cost of that for
+# mason builds. So: I think we should request travis add some kind
+# of boolean logic to disable the apt addon from running somehow
+sudo: required
+
+# TODO - caching will not work until we achieve sudo:false
+#cache:
+#  directories:
+#  - $HOME/.ccache
+#  - vendor/bundle
 
 matrix:
   include:
-    # Linux/Debian
+    # Linux + apt packages + extra tools
     - os: linux
       compiler: gcc
-      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5000 JOBS=2
-      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-4.8" OSRM_PORT=5010 JOBS=1
-      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-4.8" -DBUILD_SHARED_LIBS=ON" OSRM_PORT=5020 JOBS=2
-    # Coverage
-    - os: osx
-      compiler: clang
-      env: BUILD_TYPE=MASON COVERAGE=true OSRM_PORT=5000 JOBS=6
-    # Linux
+      env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DBUILD_SHARED_LIBS=ON -DBUILD_TOOLS=1" JOBS=2
+    # Linux + apt packages + debug build
     - os: linux
       compiler: gcc
-      env: BUILD_TYPE=MASON OSRM_PORT=5000 JOBS=2
-    # OS X
+      env: BUILD_TYPE=LINUX_DEBIAN TARGET=Debug JOBS=1
+    # Coverage on OSX (because clang++ on OS X is less likely to be OOM killed)
     - os: osx
       compiler: clang
-      env: BUILD_TYPE=MASON OSRM_PORT=5000 JOBS=6
+      env: BUILD_TYPE=MASON COVERAGE=true TARGET=Debug JOBS=4
+    # Linux + mason packages
+    - os: linux
+      compiler: gcc
+      env: BUILD_TYPE=MASON JOBS=2
+    # OS X + mason packages
+    - os: osx
+      compiler: clang
+      env: BUILD_TYPE=MASON JOBS=6
 
 before_install:
-- export COVERAGE=${COVERAGE:-false}
-
-install:
+ - if [[ $(uname -s) == 'Linux' ]]; then
+    export CXX="g++-4.8";
+    export CC="gcc-4.8";
+   fi
+ # install deps
  - source ./scripts/${BUILD_TYPE}-install.sh
  # osmosis build
  - if [[ $(uname -s) == 'Darwin' ]]; then brew install osmosis; else curl -s https://gist.githubusercontent.com/DennisOSRM/803a64a9178ec375069f/raw/ | sudo bash; fi
 
-before_script:
- - rvm use 1.9.3
- - gem install bundler
- - bundle install
-
+install:
  - source scripts/build.sh
-script:
  - make -j${JOBS}
  - make tests -j${JOBS} VERBOSE=1
  - make benchmarks
  - ./datastructure-tests
  - ./algorithm-tests
+
+before_script:
+ - rvm use 1.9.3
+ - gem install bundler
+ - bundle install --without development --deployment --jobs=3 --retry=3
+
+script:
  - cd ..
  - cucumber -p verify
- - if [[ ${COVERAGE} == true ]]; then ./mason_packages/.link/bin/cpp-coveralls --exclude mason_packages --exclude build/CMakeCXXCompilerId.cpp --exclude scripts --exclude cmake --exclude osx-10.10 --exclude third_party --exclude test --build-root build --gcov-options '\-lp' --exclude doc > /dev/null; fi;
+ - ./scripts/coverage_report.sh
+
 branches:
   only:
     - master
     - develop
     - masonize
-env:
-  global:
-    - OSRM_TIMEOUT: "60"
-cache:
- - bundler
- # - apt
- - mason_packages
+
 notifications:
  slack: mapbox:PRWTij9HAHnj6pQMDGjqzbfW
  irc:
