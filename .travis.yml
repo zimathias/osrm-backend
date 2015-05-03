@@ -29,7 +29,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test','boost-latest']
-          packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost-all-dev','libgdal1-dev']
+          packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.55-all-dev','libgdal1-dev']
     # Linux + apt packages + debug build
     - os: linux
       compiler: gcc
@@ -37,7 +37,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test','boost-latest']
-          packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost-all-dev','libgdal1-dev']
+          packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.55-all-dev','libgdal1-dev']
     # Linux + mason packages
     - os: linux
       compiler: gcc
