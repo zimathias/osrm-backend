@@ -91,7 +91,6 @@ install:
 before_script:
  - cd ..
  - rvm use 1.9.3
- - gem install bundler
  - bundle install --jobs=3
 
 script:
