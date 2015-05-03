@@ -8,7 +8,7 @@ set -o pipefail
 # and only minimal source compiles
 # Normally we would install into /usr/local but in this
 # case do not to be able to use a sudo-less install on travis
-BUILD_DIR="/tmp-osrm-source-installed-deps/"
+BUILD_DIR="/tmp/osrm-source-installed-deps/"
 mkdir -p ${BUILD_DIR}
 
 CURRENT_DIR=$(pwd)
