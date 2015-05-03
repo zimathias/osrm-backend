@@ -65,9 +65,10 @@ before_install:
      if [[ ${BUILD_TYPE} == 'MASON' ]]; then
        echo '#!/bin/bash' > ./cxx_compiler
        echo 'ccache g++-4.8 "$@"' >> ./cxx_compiler
-       chmod +x ./cxx_compiler
-       export CXX="$(pwd)/cxx_compiler";
-       export CC="$(pwd)/cxx_compiler";
+       chmod 755 ./cxx_compiler
+       export PATH=$(pwd):${PATH}
+       export CXX="cxx_compiler";
+       export CC="cxx_compiler";
      else
        export CXX="g++-4.8";
        export CC="gcc-4.8";
