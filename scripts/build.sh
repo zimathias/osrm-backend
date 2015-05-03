@@ -41,6 +41,15 @@ elif [[ -d /tmp/osrm-source-installed-deps/ ]]; then
     CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_LIBRARY_PATH=/tmp/osrm-source-installed-deps/lib "
 fi
 
-cmake ../ -DCMAKE_CXX_COMPILER="${CXX}" -DCMAKE_BUILD_TYPE=${TARGET} ${CMAKEOPTIONS} ${CMAKE_ARGS}
+cmake ../ -DCMAKE_CXX_COMPILER="${CXX}" -DCMAKE_BUILD_TYPE=${TARGET} ${CMAKEOPTIONS} ${CMAKE_ARGS} || true
+
+if [[ -f CMakeFiles/CMakeOutput.log ]]; then
+    cat CMakeFiles/CMakeOutput.log
+fi
+
+if [[ -f CMakeFiles/CMakeError.log ]]; then
+    cat CMakeFiles/CMakeError.log
+fi
+
 
 set +e +u +x
