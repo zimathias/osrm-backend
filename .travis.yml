@@ -13,6 +13,7 @@ cache:
   directories:
   - mason_packages
   - vendor/bundle
+  - $HOME/.ccache
 
 # sudo:false not fully viable util:
 # https://github.com/travis-ci/travis-ci/issues/3847
@@ -21,6 +22,15 @@ cache:
 
 matrix:
   include:
+    # Linux + mason packages
+    - os: linux
+      compiler: gcc
+      env: BUILD_TYPE=MASON JOBS=6
+      sudo: false
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.8']
     # Linux + apt packages + extra tools
     - os: linux
       compiler: gcc
@@ -39,15 +49,6 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test','boost-latest']
           packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libgdal1-dev']
-    # Linux + mason packages
-    - os: linux
-      compiler: gcc
-      env: BUILD_TYPE=MASON JOBS=6
-      sudo: false
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.8']
     # Coverage on OSX (because clang++ on OS X is less likely to be OOM killed)
     - os: osx
       compiler: clang
@@ -61,11 +62,14 @@ matrix:
 
 before_install:
  - if [[ $(uname -s) == 'Linux' ]]; then
-     export CXX="g++-4.8";
-     export CC="gcc-4.8";
-   fi
- - if [[ ${BUILD_TYPE} == 'LINUX_DEBIAN' ]]; then
-     sudo apt-get install -y libtbb-dev libboost1.55-all-dev libstxxl-dev libstxxl1;
+     if [[ ${BUILD_TYPE} == 'MASON' ]]; then
+       export CXX="ccache g++-4.8";
+       export CC="ccache gcc-4.8";
+     else
+       export CXX="g++-4.8";
+       export CC="gcc-4.8";
+       sudo apt-get install -y libtbb-dev libboost1.55-all-dev libstxxl-dev libstxxl1;
+     fi
    fi
  # install deps
  - source ./scripts/${BUILD_TYPE}-install.sh
