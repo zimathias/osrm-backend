@@ -1,11 +1,5 @@
 language: cpp
 
-# TODO: try per job apt sources: https://github.com/travis-ci/travis-ci/issues/3505
-addons:
-  apt:
-    sources: ['ubuntu-toolchain-r-test','boost-latest/ppa']
-    packages: ['g++-4.8','rubygems','protobuf-compiler','libprotoc-dev','libprotobuf7','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','libzip-dev','lua5.1','liblua5.1-0-dev','rubygems','libtbb-dev','libboost1.54-all-dev','libgdal-dev']
-
 env:
   global:
     - OSRM_TIMEOUT: 60
@@ -13,9 +7,13 @@ env:
 
 sudo: false
 
+git:
+  depth: 10
+  submodules: false
+
 cache:
   directories:
-  #- $HOME/.ccache
+  - mason_packages
   - vendor/bundle
 
 matrix:
@@ -24,18 +22,30 @@ matrix:
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DBUILD_SHARED_LIBS=ON -DBUILD_TOOLS=1" JOBS=2
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test','boost-latest/ppa']
+          packages: ['g++-4.8','rubygems','protobuf-compiler','libprotoc-dev','libprotobuf7','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','libzip-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.54-all-dev','libgdal-dev']
     # Linux + apt packages + debug build
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=LINUX_DEBIAN TARGET=Debug JOBS=1
-    # Coverage on OSX (because clang++ on OS X is less likely to be OOM killed)
-    - os: osx
-      compiler: clang
-      env: BUILD_TYPE=MASON COVERAGE=true TARGET=Debug JOBS=4
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test','boost-latest/ppa']
+          packages: ['g++-4.8','rubygems','protobuf-compiler','libprotoc-dev','libprotobuf7','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','libzip-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.54-all-dev','libgdal-dev']
     # Linux + mason packages
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=MASON JOBS=2
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.8','rubygems']
+    # Coverage on OSX (because clang++ on OS X is less likely to be OOM killed)
+    - os: osx
+      compiler: clang
+      env: BUILD_TYPE=MASON COVERAGE=true TARGET=Debug JOBS=4
     # OS X + mason packages
     - os: osx
       compiler: clang
@@ -54,8 +64,8 @@ before_install:
 install:
  - source scripts/build.sh
  - make -j${JOBS}
- - make tests -j${JOBS} VERBOSE=1
- - make benchmarks
+ - make tests -j${JOBS}
+ - make benchmarks -j${JOBS}
  - ./datastructure-tests
  - ./algorithm-tests
 
