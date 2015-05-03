@@ -24,16 +24,16 @@ matrix:
       env: BUILD_TYPE=LINUX_DEBIAN CMAKEOPTIONS="-DBUILD_SHARED_LIBS=ON -DBUILD_TOOLS=1" JOBS=2
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test','boost-latest/ppa']
-          packages: ['g++-4.8','protobuf-compiler','libprotoc-dev','libprotobuf7','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','libzip-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.54-all-dev','libgdal-dev']
+          sources: ['ubuntu-toolchain-r-test','boost-latest']
+          packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost-all-dev','libgdal1-dev']
     # Linux + apt packages + debug build
     - os: linux
       compiler: gcc
       env: BUILD_TYPE=LINUX_DEBIAN TARGET=Debug JOBS=1
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test','boost-latest/ppa']
-          packages: ['g++-4.8','protobuf-compiler','libprotoc-dev','libprotobuf7','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','libzip-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.54-all-dev','libgdal-dev']
+          sources: ['ubuntu-toolchain-r-test','boost-latest']
+          packages: ['g++-4.8','protobuf-compiler','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','zlib1g-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost-all-dev','libgdal1-dev']
     # Linux + mason packages
     - os: linux
       compiler: gcc
