@@ -25,7 +25,7 @@ git clone --depth 1 https://github.com/DennisOSRM/luabind.git
 cd luabind
 mkdir build
 cd build
-cmake .. -DCMAKE_CXX_COMPILER=${CXX} \
+cmake .. -DCMAKE_CXX_COMPILER="${CXX}" \
   -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} \
   -DBUILD_TESTING=OFF \
   -DCMAKE_BUILD_TYPE=${TARGET}
@@ -41,7 +41,7 @@ tar -xvzf cmake-3.2.1.tar.gz > /tmp/unpack.txt
 cd cmake-3.2.1
 mkdir build
 cd build
-cmake .. -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} >/tmp/cmake.log 2> /tmp/cmake_err.log
+cmake .. -DCMAKE_CXX_COMPILER="${CXX}" -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} >/tmp/cmake.log 2> /tmp/cmake_err.log
 make >/tmp/make.log 2> /tmp/make_error.log
 make install >/tmp/make.log 2> /tmp/make_error.log
 
@@ -52,7 +52,7 @@ git clone --depth 1 https://github.com/scrosby/OSM-binary.git
 cd OSM-binary
 mkdir build
 cd build
-cmake .. -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_INSTALL_PREFIX=${BUILD_DIR}
+cmake .. -DCMAKE_CXX_COMPILER="${CXX}" -DCMAKE_INSTALL_PREFIX=${BUILD_DIR}
 make install
 
 echo "install success, now setting PATH and LD_LIBRARY_PATH so custom builds are found"

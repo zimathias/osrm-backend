@@ -25,7 +25,7 @@ mkdir -p build
 cd build
 
 # common build args
-CMAKE_ARGS="../ -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=${TARGET} ${CMAKEOPTIONS} "
+CMAKE_ARGS=""
 
 set -x
 # extra args for mason build to ensure deps inside ./mason_packages are used
@@ -38,6 +38,6 @@ if [[ ${MASON_HOME:-false} != false ]]; then
     CMAKE_ARGS="${CMAKE_ARGS} -DOSMPBF_INCLUDE_DIR=${MASON_HOME}/include "
 fi
 
-cmake ${CMAKE_ARGS}
+cmake ../ -DCMAKE_CXX_COMPILER="${CXX}" -DCMAKE_BUILD_TYPE=${TARGET} ${CMAKEOPTIONS} ${CMAKE_ARGS}
 
 set +e +u +x
