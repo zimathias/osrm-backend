@@ -25,7 +25,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test','boost-latest/ppa']
-          packages: ['g++-4.8','rubygems','protobuf-compiler','libprotoc-dev','libprotobuf7','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','libzip-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.54-all-dev','libgdal-dev']
+          packages: ['g++-4.8','protobuf-compiler','libprotoc-dev','libprotobuf7','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','libzip-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.54-all-dev','libgdal-dev']
     # Linux + apt packages + debug build
     - os: linux
       compiler: gcc
@@ -33,7 +33,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test','boost-latest/ppa']
-          packages: ['g++-4.8','rubygems','protobuf-compiler','libprotoc-dev','libprotobuf7','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','libzip-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.54-all-dev','libgdal-dev']
+          packages: ['g++-4.8','protobuf-compiler','libprotoc-dev','libprotobuf7','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','libzip-dev','lua5.1','liblua5.1-0-dev','libtbb-dev','libboost1.54-all-dev','libgdal-dev']
     # Linux + mason packages
     - os: linux
       compiler: gcc
@@ -41,7 +41,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.8','rubygems']
+          packages: ['g++-4.8']
     # Coverage on OSX (because clang++ on OS X is less likely to be OOM killed)
     - os: osx
       compiler: clang
