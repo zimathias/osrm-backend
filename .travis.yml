@@ -63,8 +63,11 @@ matrix:
 before_install:
  - if [[ $(uname -s) == 'Linux' ]]; then
      if [[ ${BUILD_TYPE} == 'MASON' ]]; then
-       export CXX="ccache g++-4.8";
-       export CC="ccache gcc-4.8";
+       echo '#!/bin/bash' > ./cxx_compiler
+       echo 'ccache g++-4.8 "$@"' >> ./cxx_compiler
+       chmod +x ./cxx_compiler
+       export CXX="$(pwd)/cxx_compiler";
+       export CC="$(pwd)/cxx_compiler";
      else
        export CXX="g++-4.8";
        export CC="gcc-4.8";
