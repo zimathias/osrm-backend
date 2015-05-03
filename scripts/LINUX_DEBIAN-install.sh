@@ -3,13 +3,6 @@
 set -e -u
 set -o pipefail
 
-echo "installing on debian:"
-sudo add-apt-repository -y ppa:boost-latest/ppa
-sudo apt-get update >/dev/null
-sudo apt-get -q install protobuf-compiler libprotoc-dev libprotobuf7 libprotobuf-dev libbz2-dev libstxxl-dev libstxxl1 libxml2-dev libzip-dev lua5.1 liblua5.1-0-dev rubygems libtbb-dev
-sudo apt-get install libboost1.54-all-dev
-sudo apt-get install libgdal-dev
-
 echo "installing custom builds:"
 # luabind
 curl https://gist.githubusercontent.com/DennisOSRM/f2eb7b948e6fe1ae319e/raw/install-luabind.sh | sudo bash

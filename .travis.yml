@@ -1,32 +1,22 @@
 language: cpp
 
+# TODO: try per job apt sources: https://github.com/travis-ci/travis-ci/issues/3505
 addons:
   apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
-      - rubygems
+    sources: ['ubuntu-toolchain-r-test','boost-latest/ppa']
+    packages: ['g++-4.8','rubygems','protobuf-compiler','libprotoc-dev','libprotobuf7','libprotobuf-dev','libbz2-dev','libstxxl-dev','libstxxl1','libxml2-dev','libzip-dev','lua5.1','liblua5.1-0-dev','rubygems','libtbb-dev','libboost1.54-all-dev','libgdal-dev']
 
 env:
   global:
     - OSRM_TIMEOUT: 60
     - OSRM_PORT: 5000
 
-# we require sudo currently to install apt packages
-# the trouble is that while we could install the apt packages
-# using the sudo free "addons" method above that would run
-# for every build (even the mason builds that do not need any
-# apt packages). We do not want to pay the time cost of that for
-# mason builds. So: I think we should request travis add some kind
-# of boolean logic to disable the apt addon from running somehow
-sudo: required
+sudo: false
 
-# TODO - caching will not work until we achieve sudo:false
-#cache:
-#  directories:
-#  - $HOME/.ccache
-#  - vendor/bundle
+cache:
+  directories:
+  #- $HOME/.ccache
+  - vendor/bundle
 
 matrix:
   include:
@@ -70,12 +60,12 @@ install:
  - ./algorithm-tests
 
 before_script:
+ - cd ..
  - rvm use 1.9.3
  - gem install bundler
- - bundle install --without development --deployment --jobs=3 --retry=3
+ - bundle install --jobs=3
 
 script:
- - cd ..
  - cucumber -p verify
  - ./scripts/coverage_report.sh
 

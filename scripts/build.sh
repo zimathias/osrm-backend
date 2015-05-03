@@ -24,16 +24,17 @@ mkdir -p build
 cd build
 
 # common build args
-CMAKE_ARGS="../ -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=${TARGET} ${CMAKEOPTIONS}"
+CMAKE_ARGS="../ -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=${TARGET} ${CMAKEOPTIONS} "
 
+set -x
 # extra args for mason build to ensure deps inside ./mason_packages are used
 if [[ ${BUILD_TYPE} == "MASON" ]]; then
-    CMAKE_ARGS="${CMAKE_ARGS} -DBoost_NO_SYSTEM_PATHS=ON"
-    CMAKE_ARGS="${CMAKE_ARGS} -DTBB_INSTALL_DIR=${MASON_HOME}"
-    CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_INCLUDE_PATH=${MASON_HOME}/include"
-    CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_LIBRARY_PATH=${MASON_HOME}/lib"
+    CMAKE_ARGS="${CMAKE_ARGS} -DBoost_NO_SYSTEM_PATHS=ON "
+    CMAKE_ARGS="${CMAKE_ARGS} -DTBB_INSTALL_DIR=${MASON_HOME} "
+    CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_INCLUDE_PATH=${MASON_HOME}/include "
+    CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_LIBRARY_PATH=${MASON_HOME}/lib "
 fi
 
 cmake ${CMAKE_ARGS}
 
-set +e +u
+set +e +u +x
