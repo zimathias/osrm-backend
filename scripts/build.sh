@@ -36,6 +36,9 @@ if [[ ${MASON_HOME:-false} != false ]]; then
     CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_INCLUDE_PATH=${MASON_HOME}/include "
     CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_LIBRARY_PATH=${MASON_HOME}/lib "
     CMAKE_ARGS="${CMAKE_ARGS} -DOSMPBF_INCLUDE_DIR=${MASON_HOME}/include "
+elif [[ -d /tmp/osrm-source-installed-deps/ ]]; then
+    CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_INCLUDE_PATH=/tmp/osrm-source-installed-deps/include "
+    CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_LIBRARY_PATH=/tmp/osrm-source-installed-deps/lib "
 fi
 
 cmake ../ -DCMAKE_CXX_COMPILER="${CXX}" -DCMAKE_BUILD_TYPE=${TARGET} ${CMAKEOPTIONS} ${CMAKE_ARGS}
