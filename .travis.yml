@@ -10,8 +10,8 @@ git:
   submodules: false
 
 cache:
+  bundler: true
   directories:
-  - vendor/bundle
   - $HOME/.ccache
 
 # sudo:false not fully viable util:
