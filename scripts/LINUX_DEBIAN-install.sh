@@ -36,14 +36,11 @@ make install
 echo "installing custom cmake because the apt package is too old"
 # adapted from https://gist.githubusercontent.com/DennisOSRM/5fad9bee5c7f09fd7fc9/raw/
 cd ${BUILD_DIR}
-wget http://www.cmake.org/files/v3.2/cmake-3.2.1.tar.gz
-tar -xvzf cmake-3.2.1.tar.gz > /tmp/unpack.txt
-cd cmake-3.2.1
-mkdir build
-cd build
-cmake .. -DCMAKE_CXX_COMPILER="${CXX}" -DCMAKE_INSTALL_PREFIX=${BUILD_DIR} >/tmp/cmake.log 2> /tmp/cmake_err.log
-make >/tmp/make.log 2> /tmp/make_error.log
-make install >/tmp/make.log 2> /tmp/make_error.log
+wget http://www.cmake.org/files/v3.2/cmake-3.2.2-Linux-x86_64.tar.gz
+tar -xzf cmake-3.2.2-Linux-x86_64.tar.gz
+mkdir -p ${BUILD_DIR}/bin
+mkdir -p ${BUILD_DIR}/share
+cp cmake-3.2.2-Linux-x86_64/bin/cmake ${BUILD_DIR}/bin/
 
 echo "install osmpbf library because the apt package is too old"
 # adapted from https://gist.githubusercontent.com/DennisOSRM/13b1b4fe38a57ead850e/raw/install_osmpbf.sh
