@@ -14,11 +14,6 @@ cache:
   directories:
   - $HOME/.ccache
 
-# sudo:false not fully viable util:
-# https://github.com/travis-ci/travis-ci/issues/3847
-# https://github.com/travis-ci/travis-ci/issues/3846
-# https://github.com/travis-ci/travis-ci/issues/3759
-
 matrix:
   include:
     # Linux + mason packages
@@ -60,28 +55,11 @@ matrix:
       sudo: false
 
 before_install:
- - if [[ $(uname -s) == 'Linux' ]]; then
-     if [[ ${BUILD_TYPE} == 'MASON' ]]; then
-       echo '#!/bin/bash' > ./cxx_compiler;
-       echo 'ccache g++-4.8 "$@"' >> ./cxx_compiler;
-       chmod +x ./cxx_compiler;
-       export CXX="$(pwd)/cxx_compiler";
-       echo '#!/bin/bash' > ./c_compiler;
-       echo 'ccache gcc-4.8 "$@"' >> ./c_compiler;
-       chmod +x ./c_compiler;
-       export CC="$(pwd)/c_compiler";
-     else
-       export CXX="g++-4.8";
-       export CC="gcc-4.8";
-       sudo apt-get install -y libtbb-dev libboost1.55-all-dev libstxxl-dev libstxxl1;
-     fi
-   fi
- # install deps
- - source ./scripts/${BUILD_TYPE}-install.sh
- - source ./scripts/install_osmosis.sh
+ - source ./scripts/setup_compiler.sh
+ - source ./scripts/install_deps.sh
+ - source ./scripts/configure_osrm.sh
 
 install:
- - source scripts/build.sh
  - make -j${JOBS}
  - make tests -j${JOBS}
  - make benchmarks -j${JOBS}
