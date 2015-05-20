@@ -27,7 +27,6 @@ cd build
 # common build args
 CMAKE_ARGS=""
 
-set -x
 # extra args for mason build to ensure deps inside ./mason_packages are used
 # MASON_HOME is set by ./bootstrap.sh currently
 if [[ ${MASON_HOME:-false} != false ]]; then
@@ -43,4 +42,4 @@ fi
 
 cmake ../ -DCMAKE_CXX_COMPILER="${CXX}" -DCMAKE_BUILD_TYPE=${TARGET} ${CMAKEOPTIONS} ${CMAKE_ARGS}
 
-set +e +u +x
+set +e +u
