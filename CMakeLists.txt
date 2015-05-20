@@ -146,7 +146,7 @@ if(CMAKE_BUILD_TYPE MATCHES Release)
 endif()
 
 if(NOT WIN32)
-   add_definitions(-DBOOST_TEST_DYN_LINK)
+  add_definitions(-DBOOST_TEST_DYN_LINK)
 endif()
 
 # Configuring compilers
