@@ -646,11 +646,14 @@ class StaticRTree
         const FixedPointCoordinate &input_coordinate,
         std::vector<PhantomNode> &result_phantom_node_vector,
         const unsigned max_number_of_phantom_nodes,
-        const unsigned max_checked_elements = 4 * LEAF_NODE_SIZE)
+        const float max_distance = 1100)
     {
         unsigned inspected_elements = 0;
         unsigned number_of_elements_from_big_cc = 0;
         unsigned number_of_elements_from_tiny_cc = 0;
+        // is true if a big cc was added to the queue to we also have a lower bound
+        // for them. it actives pruning for big components
+        bool has_big_cc = false;
 
 #ifdef NDEBUG
         unsigned pruned_elements = 0;
@@ -669,6 +672,10 @@ class StaticRTree
         while (!traversal_queue.empty())
         {
             const IncrementalQueryCandidate current_query_node = traversal_queue.top();
+            if (current_query_node.min_dist > max_distance)
+            {
+                break;
+            }
             traversal_queue.pop();
 
             if (current_query_node.node.template is<TreeNode>())
@@ -693,10 +700,11 @@ class StaticRTree
                         BOOST_ASSERT(0.f <= current_perpendicular_distance);
 
                         if (pruning_bound.get() >= current_perpendicular_distance ||
-                            current_edge.is_in_tiny_cc())
+                            (!has_big_cc && !current_edge.is_in_tiny_cc()))
                         {
                             pruning_bound.insert(current_perpendicular_distance);
                             traversal_queue.emplace(current_perpendicular_distance, current_edge);
+                            has_big_cc = has_big_cc || !current_edge.is_in_tiny_cc();
                         }
 #ifdef NDEBUG
                         else
@@ -771,9 +779,8 @@ class StaticRTree
             }
 
             // stop the search by flushing the queue
-            if ((result_phantom_node_vector.size() >= max_number_of_phantom_nodes &&
-                 number_of_elements_from_big_cc > 0) ||
-                inspected_elements >= max_checked_elements)
+            if (result_phantom_node_vector.size() >= max_number_of_phantom_nodes &&
+                 number_of_elements_from_big_cc > 0)
             {
                 traversal_queue = std::priority_queue<IncrementalQueryCandidate>{};
             }
@@ -808,6 +815,10 @@ class StaticRTree
         unsigned inspected_elements = 0;
         unsigned number_of_elements_from_big_cc = 0;
         unsigned number_of_elements_from_tiny_cc = 0;
+
+        // is true if a big cc was added to the queue to we also have a lower bound
+        // for them. it actives pruning for big components
+        bool has_big_cc = false;
 
         unsigned pruned_elements = 0;
 
@@ -849,10 +860,11 @@ class StaticRTree
                         BOOST_ASSERT(0.f <= current_perpendicular_distance);
 
                         if (pruning_bound.get() >= current_perpendicular_distance ||
-                            current_edge.is_in_tiny_cc())
+                            (!has_big_cc && !current_edge.is_in_tiny_cc()))
                         {
                             pruning_bound.insert(current_perpendicular_distance);
                             traversal_queue.emplace(current_perpendicular_distance, current_edge);
+                            has_big_cc = has_big_cc || !current_edge.is_in_tiny_cc();
                         }
                         else
                         {
