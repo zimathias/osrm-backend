@@ -1,8 +1,6 @@
--- Car profile
-
-local find_access_tag = require("lib/access").find_access_tag
-
 -- Begin of globals
+--require("lib/access") --function temporarily inlined
+
 barrier_whitelist = { ["cattle_grid"] = true, ["border_control"] = true, ["checkpoint"] = true, ["toll_booth"] = true, ["sally_port"] = true, ["gate"] = true, ["lift_gate"] = true, ["no"] = true, ["entrance"] = true }
 access_tag_whitelist = { ["yes"] = true, ["motorcar"] = true, ["motor_vehicle"] = true, ["vehicle"] = true, ["permissive"] = true, ["designated"] = true }
 access_tag_blacklist = { ["no"] = true, ["private"] = true, ["agricultural"] = true, ["forestry"] = true, ["emergency"] = true, ["psv"] = true }
@@ -148,6 +146,16 @@ local speed_reduction = 0.8
 local mode_normal = 1
 local mode_ferry = 2
 local mode_movable_bridge = 3
+
+local function find_access_tag(source, access_tags_hierachy)
+  for i,v in ipairs(access_tags_hierachy) do
+    local access_tag = source:get_value_by_key(v)
+    if access_tag and "" ~= access_tag then
+      return access_tag
+    end
+  end
+  return ""
+end
 
 function get_exceptions(vector)
   for i,v in ipairs(restriction_exception_tags) do

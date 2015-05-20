@@ -1,8 +1,7 @@
 -- Foot profile
 
-local find_access_tag = require("lib/access").find_access_tag
+require("lib/access")
 
--- Begin of globals
 barrier_whitelist = { [""] = true, ["cycle_barrier"] = true, ["bollard"] = true, ["entrance"] = true, ["cattle_grid"] = true, ["border_control"] = true, ["toll_booth"] = true, ["sally_port"] = true, ["gate"] = true, ["no"] = true}
 access_tag_whitelist = { ["yes"] = true, ["foot"] = true, ["permissive"] = true, ["designated"] = true  }
 access_tag_blacklist = { ["no"] = true, ["private"] = true, ["agricultural"] = true, ["forestery"] = true }
@@ -76,7 +75,7 @@ end
 
 function node_function (node, result)
 	local barrier = node:get_value_by_key("barrier")
-	local access = find_access_tag(node, access_tags_hierachy)
+	local access = Access.find_access_tag(node, access_tags_hierachy)
 	local traffic_signal = node:get_value_by_key("highway")
 
 	-- flag node if it carries a traffic light
@@ -126,7 +125,7 @@ function way_function (way, result)
     end
 
 	-- access
-    local access = find_access_tag(way, access_tags_hierachy)
+    local access = Access.find_access_tag(way, access_tags_hierachy)
     if access_tag_blacklist[access] then
 		return
     end
