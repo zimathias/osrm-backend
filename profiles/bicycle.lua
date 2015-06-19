@@ -6,7 +6,7 @@ local limit = require("lib/maxspeed").limit
 -- Begin of globals
 barrier_whitelist = { [""] = true, ["cycle_barrier"] = true, ["bollard"] = true, ["entrance"] = true, ["cattle_grid"] = true, ["border_control"] = true, ["toll_booth"] = true, ["sally_port"] = true, ["gate"] = true, ["no"] = true }
 access_tag_whitelist = { ["yes"] = true, ["permissive"] = true, ["designated"] = true }
-access_tag_blacklist = { ["no"] = true, ["private"] = true, ["agricultural"] = true, ["forestery"] = true }
+access_tag_blacklist = { ["no"] = true, ["private"] = true, ["agricultural"] = true, ["forestry"] = true }
 access_tag_restricted = { ["destination"] = true, ["delivery"] = true }
 access_tags_hierachy = { "bicycle", "vehicle", "access" }
 cycleway_tags = {["track"]=true,["lane"]=true,["opposite"]=true,["opposite_lane"]=true,["opposite_track"]=true,["share_busway"]=true,["sharrow"]=true,["shared"]=true }
@@ -81,8 +81,7 @@ surface_speeds = {
   ["unpaved"] = 6,
   ["fine_gravel"] = 6,
   ["gravel"] = 6,
-  ["fine_gravel"] = 6,
-  ["pebbelstone"] = 6,
+  ["pebblestone"] = 6,
   ["ground"] = 6,
   ["dirt"] = 6,
   ["earth"] = 6,
@@ -135,9 +134,14 @@ end
 
 function node_function (node, result)
   -- parse access and barrier tags
+  local highway = node:get_value_by_key("highway")
+  local is_crossing = highway and highway == "crossing"
+
   local access = find_access_tag(node, access_tags_hierachy)
   if access and access ~= "" then
-    if access_tag_blacklist[access] then
+    -- access restrictions on crossing nodes are not relevant for
+    -- the traffic on the road
+    if access_tag_blacklist[access] and not is_crossing then
       result.barrier = true
     end
   else

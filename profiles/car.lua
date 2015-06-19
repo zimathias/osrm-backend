@@ -241,12 +241,6 @@ function way_function (way, result)
     return
   end
 
-  local width = math.huge
-  local width_string = way:get_value_by_key("width")
-  if width_string and tonumber(width_string:match("%d*")) then
-    width = tonumber(width_string:match("%d*"))
-  end
-
   -- Check if we are allowed to access the way
   local access = find_access_tag(way, access_tags_hierachy)
   if access_tag_blacklist[access] then
@@ -345,9 +339,14 @@ function way_function (way, result)
   local service = way:get_value_by_key("service")
 
   -- Set the name that will be used for instructions
-  if ref and "" ~= ref then
+  local has_ref = ref and "" ~= ref
+  local has_name = name and "" ~= name
+
+  if has_name and has_ref then
+    result.name = name .. " (" .. ref .. ")"
+  elseif has_ref then
     result.name = ref
-  elseif name and "" ~= name then
+  elseif has_name then
     result.name = name
 --  else
       --    result.name = highway  -- if no name exists, use way type
@@ -399,12 +398,25 @@ function way_function (way, result)
     result.ignore_in_grid = true
   end
 
+  local width = math.huge
+  local lanes = math.huge
+  if result.forward_speed > 0 or result.backward_speed > 0 then
+    local width_string = way:get_value_by_key("width")
+    if width_string and tonumber(width_string:match("%d*")) then
+      width = tonumber(width_string:match("%d*"))
+    end
+
+    local lanes_string = way:get_value_by_key("lanes")
+    if lanes_string and tonumber(lanes_string:match("%d*")) then
+      lanes = tonumber(lanes_string:match("%d*"))
+    end
+  end
 
   -- scale speeds to get better avg driving times
   if result.forward_speed > 0 then
     local scaled_speed = result.forward_speed*speed_reduction + 11;
     local penalized_speed = math.huge
-    if width <= 3 then
+    if width <= 3 or lanes <= 1 then
       penalized_speed = result.forward_speed / 2;
     end
     result.forward_speed = math.min(penalized_speed, scaled_speed)
@@ -413,7 +425,7 @@ function way_function (way, result)
   if result.backward_speed > 0 then
     local scaled_speed = result.backward_speed*speed_reduction + 11;
     local penalized_speed = math.huge
-    if width <= 3 then
+    if width <= 3 or lanes <= 1 then
       penalized_speed = result.backward_speed / 2;
     end
     result.backward_speed = math.min(penalized_speed, scaled_speed)
