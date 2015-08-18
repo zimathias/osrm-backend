@@ -108,10 +108,27 @@ int Prepare::Run()
 std::size_t Prepare::LoadEdgeExpandedGraph(
         std::string const & edge_based_graph_filename, 
         unsigned & edges_crc32, 
-        DeallocatingVector<EdgeBasedEdge> & edge_based_edge_list) {
+        DeallocatingVector<EdgeBasedEdge> & edge_based_edge_list)
+{
 
-    // TODO TODO TODO - actually load the .ebg file here
-    return 0;
+    boost::filesystem::ifstream input_stream(edge_based_graph_filename, std::ios::in | std::ios::binary);
+    unsigned number_of_edges = 0;
+    size_t max_edge_id = SPECIAL_EDGEID;
+    input_stream.read((char *)&number_of_edges, sizeof(unsigned));
+    input_stream.read((char *)&max_edge_id, sizeof(size_t));
+    input_stream.read((char *)&edges_crc32, sizeof(unsigned));
+
+    edge_based_edge_list.resize(number_of_edges);
+
+    // TODO: can we read this in bulk?  DeallocatingVector isn't necessarily
+    // all stored contiguously
+    for (;number_of_edges > 0; --number_of_edges) {
+        EdgeBasedEdge inbuffer;
+        input_stream.read((char *) &inbuffer, sizeof(EdgeBasedEdge));
+        edge_based_edge_list.emplace_back(std::move(inbuffer));
+    }
+
+    return max_edge_id;
 }
 
 
