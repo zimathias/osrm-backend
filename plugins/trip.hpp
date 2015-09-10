@@ -233,6 +233,8 @@ template <class DataFacadeT> class RoundTripPlugin final : public BasePlugin
     int HandleRequest(const RouteParameters &route_parameters,
                       osrm::json::Object &json_result) override final
     {
+        TIMER_START(PHANTOM_TIMER);
+
         // check if all inputs are coordinates
         if (!check_all_coordinates(route_parameters.coordinates))
         {
@@ -243,6 +245,10 @@ template <class DataFacadeT> class RoundTripPlugin final : public BasePlugin
         PhantomNodeArray phantom_node_vector(route_parameters.coordinates.size());
         GetPhantomNodes(route_parameters, phantom_node_vector);
         const auto number_of_locations = phantom_node_vector.size();
+
+        TIMER_STOP(PHANTOM_TIMER);
+
+        TIMER_START(DIST_TABLE_TIMER);
 
         // compute the distance table of all phantom nodes
         const auto result_table = DistTableWrapper<EdgeWeight>(
@@ -257,14 +263,22 @@ template <class DataFacadeT> class RoundTripPlugin final : public BasePlugin
         BOOST_ASSERT_MSG(result_table.size() == number_of_locations * number_of_locations,
                          "Distance Table has wrong size.");
 
+        TIMER_STOP(DIST_TABLE_TIMER);
+
+        TIMER_START(SCC_TIMER);
+
         // get scc components
         SCC_Component scc = SplitUnaccessibleLocations(number_of_locations, result_table);
+
+        TIMER_STOP(SCC_TIMER);
+
+        TIMER_START(TRIP_TIMER);
 
         using NodeIDIterator = typename std::vector<NodeID>::const_iterator;
 
         std::vector<std::vector<NodeID>> route_result;
         route_result.reserve(scc.GetNumberOfComponents());
-        TIMER_START(TRIP_TIMER);
+
         // run Trip computation for every SCC
         for (std::size_t k = 0; k < scc.GetNumberOfComponents(); ++k)
         {
@@ -309,6 +323,10 @@ template <class DataFacadeT> class RoundTripPlugin final : public BasePlugin
             }
         }
 
+        TIMER_STOP(TRIP_TIMER);
+
+        TIMER_START(ROUTE_TIMER);
+
         // compute all round trip routes
         std::vector<InternalRouteResult> comp_route;
         comp_route.reserve(route_result.size());
@@ -318,10 +336,9 @@ template <class DataFacadeT> class RoundTripPlugin final : public BasePlugin
                 ComputeRoute(phantom_node_vector, route_parameters, route_result[r]));
         }
 
-        TIMER_STOP(TRIP_TIMER);
+        TIMER_STOP(ROUTE_TIMER);
 
-        SimpleLogger().Write() << "Trip calculation took: " << TIMER_MSEC(TRIP_TIMER) / 1000.
-                               << "s";
+        TIMER_START(JSON_TIMER);
 
         // prepare JSON output
         // create a json object for every trip
@@ -344,7 +361,14 @@ template <class DataFacadeT> class RoundTripPlugin final : public BasePlugin
 
         json_result.values["trips"] = std::move(trip);
 
+        TIMER_STOP(JSON_TIMER);
 
+        json_result.values["phantom_timer"] = std::move(TIMER_MSEC(PHANTOM_TIMER));
+        json_result.values["dist_table_timer"] = std::move(TIMER_MSEC(DIST_TABLE_TIMER));
+        json_result.values["scc_timer"] = std::move(TIMER_MSEC(SCC_TIMER));
+        json_result.values["trip_timer"] = std::move(TIMER_MSEC(TRIP_TIMER));
+        json_result.values["route_timer"] = std::move(TIMER_MSEC(ROUTE_TIMER));
+        json_result.values["json_timer"] = std::move(TIMER_MSEC(JSON_TIMER));
 
         return 200;
     }
