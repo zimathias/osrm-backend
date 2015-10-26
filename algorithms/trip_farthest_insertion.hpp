@@ -77,7 +77,8 @@ GetShortestRoundTrip(const NodeID new_loc,
 
         BOOST_ASSERT_MSG(dist_from != INVALID_EDGE_WEIGHT, "distance has invalid edge weight");
         BOOST_ASSERT_MSG(dist_to != INVALID_EDGE_WEIGHT, "distance has invalid edge weight");
-        BOOST_ASSERT_MSG(trip_dist >= 0, "previous trip was not minimal. something's wrong");
+        //quickfix for segfault if dist table is wrong (see issue https://github.com/Project-OSRM/osrm-backend/issues/1747)
+        // BOOST_ASSERT_MSG(trip_dist >= 0, "previous trip was not minimal. something's wrong");
 
         // from all possible insertions to the current trip, choose the shortest of all insertions
         if (trip_dist < min_trip_distance)
@@ -87,6 +88,9 @@ GetShortestRoundTrip(const NodeID new_loc,
         }
     }
     BOOST_ASSERT_MSG(min_trip_distance != INVALID_EDGE_WEIGHT, "trip has invalid edge weight");
+
+    //quickfix for segfault if dist table is wrong (see issue https://github.com/Project-OSRM/osrm-backend/issues/1747)
+    min_trip_distance = min_trip_distance < 0 ? 0 : min_trip_distance;
 
     return std::make_pair(min_trip_distance, next_insert_point_candidate);
 }
