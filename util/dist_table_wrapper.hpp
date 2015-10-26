@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <vector>
 #include <utility>
+#include <string>
 #include <boost/assert.hpp>
 #include <cstddef>
 
@@ -79,6 +80,17 @@ template <typename T> class DistTableWrapper
     }
 
     std::vector<T> GetTable() const { return table_; }
+
+    std::string to_string() const {
+        std::string res = "";
+        for (std::size_t from = 0; from < number_of_nodes_; ++from){
+            for (std::size_t to = 0; to < number_of_nodes_; ++to){
+                res += std::to_string(table_[from * number_of_nodes_ + to]) + ", ";
+            }
+            res += "\n";
+        }
+        return res;
+    }
 
   private:
     std::vector<T> table_;
