@@ -157,6 +157,7 @@ void ExtractionContainers::WriteNames(const std::string& names_file_name) const
 
 void ExtractionContainers::PrepareNodes()
 {
+    std::cout << "[extractor] used_node_id_list: " << used_node_id_list.size() << " (" << sizeof(decltype(used_node_id_list.front())) << ")" <<std::endl;
     std::cout << "[extractor] Sorting used nodes        ... " << std::flush;
     TIMER_START(sorting_used_nodes);
     stxxl::sort(used_node_id_list.begin(), used_node_id_list.end(), Cmp(), stxxl_memory);
@@ -169,8 +170,10 @@ void ExtractionContainers::PrepareNodes()
     used_node_id_list.resize(new_end - used_node_id_list.begin());
     TIMER_STOP(erasing_dups);
     std::cout << "ok, after " << TIMER_SEC(erasing_dups) << "s" << std::endl;
+    std::cout << "[extractor] unique used_node_id_list: " << used_node_id_list.size() << std::endl;
 
     std::cout << "[extractor] Sorting all nodes         ... " << std::flush;
+    std::cout << "[extractor] all_nodes_list: " << all_nodes_list.size() << " (" << sizeof(decltype(all_nodes_list.front())) << ")" <<std::endl;
     TIMER_START(sorting_nodes);
     stxxl::sort(all_nodes_list.begin(), all_nodes_list.end(), ExternalMemoryNodeSTXXLCompare(),
                 stxxl_memory);
