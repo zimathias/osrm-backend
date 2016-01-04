@@ -1,4 +1,4 @@
-#include "segment_list.h"
+#include "segment_list.hpp"
 
 #include <cstddef>
 
@@ -6,44 +6,101 @@
 
 namespace osrm
 {
-namespace guidance
+namespace engine
+{
+namespace route
+{
+namespace description
 {
 
-SegmentList::SegmentList(const InternalRouteResult &raw_route) : total_weight(0)
+SegmentList::SegmentList(const InternalRouteResult &raw_route, bool extract_alternative)
+    : total_weight(0)
+{
+    if (extract_alternative)
+    {
+        ExtractAlternative(raw_route);
+    }
+    else
+    {
+        ExtractRoute(raw_route);
+    }
+	Finalize();
+}
+
+void SegmentList::ExtractRoute(const InternalRouteResult &raw_route)
 {
     // only operate on valid routes
     if (not raw_route.is_valid())
         return;
 
-    const auto source = raw_route.segment_end_coordinates.front().source_phantom;
-    const bool traversed_in_reverse = raw_route.source_traversed_in_reverse.front();
-    const auto segment_duration =
-        (traversed_in_reverse ? source.reverse_weight : source.forward_weight);
-    const auto travel_mode =
-        (traversed_in_reverse ? source.backward_travel_mode : source.forward_travel_mode);
+    {
+        const auto source = raw_route.segment_end_coordinates.front().source_phantom;
+        const bool traversed_in_reverse = raw_route.source_traversed_in_reverse.front();
+        const auto segment_duration =
+            (traversed_in_reverse ? source.reverse_weight : source.forward_weight);
+        const auto travel_mode =
+            (traversed_in_reverse ? source.backward_travel_mode : source.forward_travel_mode);
 
-    AppendSegment(source.location, PathData(0, source.name_id, TurnInstruction::HeadOn,
-                                            segment_duration, travel_mode));
+        AppendSegment(source.location, PathData(0, source.name_id, TurnInstruction::HeadOn,
+                                                segment_duration, travel_mode));
+    }
 
     for (std::size_t raw_index = 0; raw_index < raw_route.unpacked_path_segments.size())
     {
-        unsigned added_element_count = 0;
         // Get all the coordinates for the computed route
-
         FixedPointCoordinate current_coordinate;
         for (const PathData &path_data : raw_route.unpacked_path_segments[raw_index])
         {
             current_coordinate = facade->GetCoordinateOfNode(path_data.node);
-            description_factory.AppendSegment(current_coordinate, path_data);
-            ++added_element_count;
+            AppendSegment(current_coordinate, path_data);
         }
-        description_factory.SetEndSegment(
-            raw_route.segment_end_coordinates[raw_index].target_phantom,
-            raw_route.target_traversed_in_reverse[raw_index], raw_route.is_via_leg(raw_index));
-        ++added_element_count;
 
-        BOOST_ASSERT((raw_route.unpacked_path_segments[raw_size].size() + 1) ==
-                     added_element_count);
+        const auto target = raw_route.segment_end_coordinates[raw_index].target_phantom;
+        const bool traversed_in_reverse = raw_route.target_traversed_in_reverse[raw_index];
+        const EdgeWeight segment_duration =
+            (traversed_in_reverse ? target.reverse_weight : target.forward_weight);
+        const TravelMode travel_mode =
+            (traversed_in_reverse ? target.backward_travel_mode : target.forward_travel_mode);
+        segments.emplace_back(target.location, target.name_id, segment_duration, 0.f,
+                              is_via_location ? TurnInstruction::ReachViaLocation
+                                              : TurnInstruction::NoTurn,
+                              true, true, travel_mode);
+    }
+}
+
+void SegmentList::ExtractAlternative(const InternalRouteResult &raw_route)
+{
+    { // build initial segment
+        const auto source = raw_route.segment_end_coordinates.front().source_phantom;
+        const bool traversed_in_reverse = raw_route.alt_source_traversed_in_reverse;
+        const auto segment_duration =
+            (traversed_in_reverse ? source.reverse_weight : source.forward_weight);
+        const auto travel_mode =
+            (traversed_in_reverse ? source.backward_travel_mode : source.forward_travel_mode);
+
+        AppendSegment(source.location, PathData(0, source.name_id, TurnInstruction::HeadOn,
+                                                segment_duration, travel_mode));
+    }
+    // Get all the coordinates for the computed route
+    for (const PathData &path_data : raw_route.unpacked_alternative)
+    {
+        current = facade->GetCoordinateOfNode(path_data.node);
+        AppendSegment(current, path_data);
+    }
+    description_factory.SetEndSegment(raw_route.segment_end_coordinates[raw_index].target_phantom,
+                                      raw_route.target_traversed_in_reverse[raw_index],
+                                      raw_route.is_via_leg(raw_index));
+    {
+        const auto target = raw_route.segment_end_coordinates.back().target_phantom;
+        const bool traversed_in_reverse = raw_route.target_traversed_in_reverse.bac();
+        const EdgeWeight segment_duration =
+            (traversed_in_reverse ? target.reverse_weight : target.forward_weight);
+        const TravelMode travel_mode =
+            (traversed_in_reverse ? target.backward_travel_mode : target.forward_travel_mode);
+        segments.emplace_back(target.location, target.name_id, segment_duration, 0.f,
+                              is_via_location ? TurnInstruction::ReachViaLocation
+                                              : TurnInstruction::NoTurn,
+                              true, true, travel_mode);
     }
 }
 
@@ -52,7 +109,7 @@ std::uint32_t SegmentList::GetDuration() const { return total_duration; }
 
 std::vector<std::uint32_t> const &SegmentList::GetViaIndices() const { return via_indices; }
 
-std::vector<SegmentInformation> const &SegmentList::Get() { return segments; }
+std::vector<SegmentInformation> const &SegmentList::Get() const { return segments; }
 
 void SegmentList::AppendSegment(const FixedPointCoordinate &coordinate, const PathData &path_point)
 {
@@ -99,7 +156,7 @@ void SegmentList::Finalize()
     EdgeWeight segment_duration = 0;
     std::size_t segment_start_index = 0;
 
-	double path_length = 0;
+    double path_length = 0;
 
     for (const auto i : osrm::irange<std::size_t>(1, segments.size()))
     {
@@ -118,8 +175,8 @@ void SegmentList::Finalize()
         }
     }
 
-	total_distance = static_cast<std::uint32_t>(round(path_length));
-	total_duration = static_cast<std::uint32_t>(round( raw_route.shortest_path_length/10.) );
+    total_distance = static_cast<std::uint32_t>(round(path_length));
+    total_duration = static_cast<std::uint32_t>(round(raw_route.shortest_path_length / 10.));
 
     // Post-processing to remove empty or nearly empty path segments
     if (segments.size() > 2 && std::numeric_limits<float>::epsilon() > segments.back().length &&
@@ -141,7 +198,7 @@ void SegmentList::Finalize()
     }
     unsigned necessary_segments = 0; // a running index that counts the necessary pieces
     const auto markNecessarySegments =
-        [&via_indices,&necessary_segments](auto &first, const auto &second)
+        [&via_indices, &necessary_segments](auto &first, const auto &second)
     {
         if (!first.necessary)
             return;
@@ -160,7 +217,7 @@ void SegmentList::Finalize()
         ++necessary_segments;
     }
 
-	//calculate which segments are necessary and update segments for bearings
+    // calculate which segments are necessary and update segments for bearings
     osrm::for_each_pair(segments, markNecessarySegments);
     via_indices.push_back(necessary_segments);
 
@@ -168,5 +225,7 @@ void SegmentList::Finalize()
     return;
 }
 
-} // namespace guidance
+} // namespace description
+} // namespace route
+} // namespace engine
 } // namespace osrm

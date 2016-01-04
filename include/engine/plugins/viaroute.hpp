@@ -1,6 +1,8 @@
 #ifndef VIA_ROUTE_HPP
 #define VIA_ROUTE_HPP
 
+#include "engine/guidance/api_response_generator.hpp"
+
 #include "engine/plugins/plugin_base.hpp"
 
 #include "engine/object_encoder.hpp"
@@ -139,6 +141,7 @@ template <class DataFacadeT> class ViaRoutePlugin final : public BasePlugin
 
         bool no_route = INVALID_EDGE_WEIGHT == raw_route.shortest_path_length;
 
+		/*
         std::unique_ptr<BaseDescriptor<DataFacadeT>> descriptor;
         switch (descriptor_table.get_id(route_parameters.output_format))
         {
@@ -155,6 +158,9 @@ template <class DataFacadeT> class ViaRoutePlugin final : public BasePlugin
 
         descriptor->SetConfig(route_parameters);
         descriptor->Run(raw_route, json_result);
+		*/
+		osrm::engine::route::description::ApiResponseGenerator<DataFacadeT> generator( facade );
+		generator.describeRoute( route_parameters, raw_route, json_result );
 
         // we can only know this after the fact, different SCC ids still
         // allow for connection in one direction.
