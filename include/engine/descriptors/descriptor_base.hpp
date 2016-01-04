@@ -1,6 +1,8 @@
 #ifndef DESCRIPTOR_BASE_HPP
 #define DESCRIPTOR_BASE_HPP
 
+#include "config.h"
+
 #include "util/coordinate_calculation.hpp"
 #include "engine/internal_route_result.hpp"
 #include "engine/phantom_node.hpp"
