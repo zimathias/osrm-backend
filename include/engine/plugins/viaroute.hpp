@@ -155,7 +155,7 @@ template <class DataFacadeT> class ViaRoutePlugin final : public BasePlugin
             break;
         default:
 			{
-			  osrm::engine::route::description::ApiResponseGenerator<DataFacadeT> generator( facade );
+			  osrm::engine::guidance::ApiResponseGenerator<DataFacadeT> generator( facade );
 			  generator.DescribeRoute( route_parameters, raw_route, json_result );
 			}
             break;

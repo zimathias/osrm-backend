@@ -2,11 +2,8 @@
 
 #include "engine/segment_information.hpp"
 #include "engine/guidance/segment_list.hpp"
-
 #include "extractor/turn_instructions.hpp"
-
 #include "osrm/json_container.hpp"
-
 #include "util/bearing.hpp"
 #include "util/cast.hpp"
 
@@ -20,9 +17,9 @@ namespace osrm
 {
 namespace engine
 {
-namespace route
+namespace guidance
 {
-namespace description
+namespace annotators
 {
 template< typename DataFacadeT >
 inline osrm::json::Array
@@ -128,7 +125,7 @@ AnnotateRoute(const std::vector<SegmentInformation> &route_segments, DataFacadeT
     return json_instruction_array;
 }
 
-} // namespace description
-} // namespace route
+} // namespace annotators
+} // namespace guidance
 } // namespace engine
 } // namespace osrm

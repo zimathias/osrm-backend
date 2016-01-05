@@ -16,9 +16,7 @@ namespace osrm
 {
 namespace engine
 {
-namespace route
-{
-namespace description
+namespace guidance
 {
 template <typename DataFacadeT> class SegmentList
 {
@@ -283,7 +281,6 @@ void SegmentList<DataFacadeT>::Finalize(bool extract_alternative,
     BOOST_ASSERT(via_indices.size() >= 2);
 }
 
-} // namespace description
-} // namespace route
+} // namespace guidance
 } // namespace engine
 } // namespace osrm

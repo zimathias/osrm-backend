@@ -29,9 +29,7 @@ namespace osrm
 {
 namespace engine
 {
-namespace route
-{
-namespace description
+namespace guidance
 {
 namespace detail
 {
@@ -107,7 +105,7 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
 
     if (config.instructions)
     {
-        json_result.values["route_instructions"] = AnnotateRoute(segment_list.Get(), facade);
+        json_result.values["route_instructions"] = annotators::AnnotateRoute(segment_list.Get(), facade);
     }
 
     RouteNames route_names;
@@ -137,7 +135,7 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
         if (config.instructions)
         {
             osrm::json::Array json_alternate_annotations_array;
-			json_alternate_annotations_array.values.push_back(AnnotateRoute(alternate_segment_list.Get(), facade));
+			json_alternate_annotations_array.values.push_back(annotators::AnnotateRoute(alternate_segment_list.Get(), facade));
             json_result.values["alternative_instructions"] = json_alternate_annotations_array;
         }
 
@@ -263,7 +261,6 @@ ApiResponseGenerator<DataFacadeT>::BuildHintData(const InternalRouteResult &raw_
     return json_hint_object;
 }
 
-} // namespace description
-} // namespace route
+} // namespace guidance
 } // namespace engine
 } // namespace osrm
