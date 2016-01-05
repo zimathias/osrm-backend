@@ -23,9 +23,10 @@ template <typename DataFacadeT> class SegmentList
   public:
     typedef DataFacadeT DataFacade;
     SegmentList(const InternalRouteResult &raw_route,
-                bool extract_alternative,
+                const bool extract_alternative,
                 const unsigned zoom_level,
-                DataFacade *facade);
+                const bool allow_simplification,
+                const DataFacade *facade);
 
     const std::vector<std::uint32_t> &GetViaIndices() const;
     std::uint32_t GetDistance() const;
@@ -34,17 +35,18 @@ template <typename DataFacadeT> class SegmentList
     std::vector<SegmentInformation> const &Get() const;
 
   private:
-    void InitRoute(const PhantomNode &phantom_node, bool traversed_in_reverse);
+    void InitRoute(const PhantomNode &phantom_node, const bool traversed_in_reverse);
     void AddLeg(const std::vector<PathData> &leg_data,
                 const PhantomNode &target_node,
-                bool traversed_in_reverse,
-                bool is_via_leg,
-                DataFacade *facade);
+                const bool traversed_in_reverse,
+                const bool is_via_leg,
+                const DataFacade *facade);
 
     void AppendSegment(const FixedPointCoordinate &coordinate, const PathData &path_point);
-    void Finalize(bool extract_alternative,
+    void Finalize(const bool extract_alternative,
                   const InternalRouteResult &raw_route,
-                  const unsigned zoom_level);
+                  const unsigned zoom_level,
+                  const bool allow_simplification);
 
     // journey length in tenth of a second
     std::uint32_t total_distance;
@@ -59,9 +61,10 @@ template <typename DataFacadeT> class SegmentList
 
 template <typename DataFacadeT>
 SegmentList<DataFacadeT>::SegmentList(const InternalRouteResult &raw_route,
-                                      bool extract_alternative,
+                                      const bool extract_alternative,
                                       const unsigned zoom_level,
-                                      DataFacade *facade)
+                                      const bool allow_simplification,
+                                      const DataFacade *facade)
     : total_distance(0), total_duration(0)
 {
     if (not raw_route.is_valid())
@@ -89,11 +92,20 @@ SegmentList<DataFacadeT>::SegmentList(const InternalRouteResult &raw_route,
         }
     }
 
-    Finalize(extract_alternative, raw_route, zoom_level);
+    if (not allow_simplification)
+    {
+        // to prevent any simplifications, we mark all segments as necessary
+        for (auto &segment : segments)
+        {
+            segment.necessary = true;
+        }
+    }
+
+    Finalize(extract_alternative, raw_route, zoom_level, allow_simplification);
 }
 
 template <typename DataFacadeT>
-void SegmentList<DataFacadeT>::InitRoute(const PhantomNode &node, bool traversed_in_reverse)
+void SegmentList<DataFacadeT>::InitRoute(const PhantomNode &node, const bool traversed_in_reverse)
 {
     const auto segment_duration =
         (traversed_in_reverse ? node.reverse_weight : node.forward_weight);
@@ -107,9 +119,9 @@ void SegmentList<DataFacadeT>::InitRoute(const PhantomNode &node, bool traversed
 template <typename DataFacadeT>
 void SegmentList<DataFacadeT>::AddLeg(const std::vector<PathData> &leg_data,
                                       const PhantomNode &target_node,
-                                      bool traversed_in_reverse,
-                                      bool is_via_leg,
-                                      DataFacade *facade)
+                                      const bool traversed_in_reverse,
+                                      const bool is_via_leg,
+                                      const DataFacade *facade)
 {
     for (const PathData &path_data : leg_data)
     {
@@ -163,27 +175,27 @@ void SegmentList<DataFacadeT>::AppendSegment(const FixedPointCoordinate &coordin
     }
 
     // make sure mode changes are announced, even when there otherwise is no turn
-    auto getTurn = [](const PathData &path_point, const TravelMode previous_mode )
+    auto getTurn = [](const PathData &path_point, const TravelMode previous_mode)
     {
         if (TurnInstruction::NoTurn == path_point.turn_instruction &&
-            previous_mode != path_point.travel_mode &&
-            path_point.segment_duration > 0)
+            previous_mode != path_point.travel_mode && path_point.segment_duration > 0)
         {
             return TurnInstruction::GoStraight;
         }
         return path_point.turn_instruction;
     };
 
-	auto turn = getTurn( path_point, segments.back().travel_mode );
+    auto turn = getTurn(path_point, segments.back().travel_mode);
 
     segments.emplace_back(coordinate, path_point.name_id, path_point.segment_duration, 0.f, turn,
                           path_point.travel_mode);
 }
 
 template <typename DataFacadeT>
-void SegmentList<DataFacadeT>::Finalize(bool extract_alternative,
+void SegmentList<DataFacadeT>::Finalize(const bool extract_alternative,
                                         const InternalRouteResult &raw_route,
-                                        const unsigned zoom_level)
+                                        const unsigned zoom_level,
+                                        const bool allow_simplification)
 {
     if (segments.empty())
         return;
@@ -249,8 +261,11 @@ void SegmentList<DataFacadeT>::Finalize(bool extract_alternative,
         start_phantom.name_id = segments.front().name_id;
     }
 
-    DouglasPeucker polyline_generalizer;
-    polyline_generalizer.Run(segments.begin(), segments.end(), zoom_level);
+    if (allow_simplification)
+    {
+        DouglasPeucker polyline_generalizer;
+        polyline_generalizer.Run(segments.begin(), segments.end(), zoom_level);
+    }
 
     unsigned necessary_segments = 0; // a running index that counts the necessary pieces
     via_indices.push_back(0);

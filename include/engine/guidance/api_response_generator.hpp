@@ -45,30 +45,40 @@ template <typename DataFacadeT> class ApiResponseGenerator
 {
   public:
     typedef DataFacadeT DataFacade;
-	typedef SegmentList<DataFacade> SegmentListT;
+    typedef SegmentList<DataFacade> SegmentListT;
+    typedef detail::Segment Segment;
+    typedef ExtractRouteNames<DataFacade, Segment> RouteNameExtractor;
+
     ApiResponseGenerator(DataFacade *facade);
 
-    // Requires Data Facade
+    // This runs a full annotation, according to config.
+    // The output is tailored to the viaroute plugin.
     void DescribeRoute(const DescriptorConfig &config,
                        const InternalRouteResult &raw_route,
                        osrm::json::Object &json_result);
 
-  private:
+    // The following functions allow access to the different parts of the Describe Route
+    // functionality.
+    // For own responses, they can be used to generate only subsets of the information.
+    // In the normal situation, Describe Route is the desired usecase.
+
     // generate an overview of a raw route
     osrm::json::Object SummarizeRoute(const InternalRouteResult &raw_route,
                                       const SegmentListT &segment_list) const;
 
-    // create an array containing all via points used in the query
+    // create an array containing all via-points/-indices used in the query
     osrm::json::Array ListViaPoints(const InternalRouteResult &raw_route) const;
-
-    // TODO find out why this is needed?
     osrm::json::Array ListViaIndices(const SegmentListT &segment_list) const;
 
-    // TODO this dedicated creation seems unnecessary? Only used for route names
-    std::vector<detail::Segment> BuildRouteSegments(const SegmentListT &segment_list) const;
+    osrm::json::Value GetGeometry(const bool return_encoded, const SegmentListT &segments) const;
 
+    // TODO this dedicated creation seems unnecessary? Only used for route names
+    std::vector<Segment> BuildRouteSegments(const SegmentListT &segment_list) const;
+
+    // adds checksum and locations
     osrm::json::Object BuildHintData(const InternalRouteResult &raw_route) const;
 
+  private:
     // data access to translate ids back into names
     DataFacade *facade;
 };
@@ -84,36 +94,33 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
                                                       const InternalRouteResult &raw_route,
                                                       osrm::json::Object &json_result)
 {
-    SegmentListT segment_list(raw_route, false, config.zoom_level, facade);
+    const bool ALLOW_SIMPLIFICATION = true;
+    const bool EXTRACT_ROUTE = false;
+    const bool EXTRACT_ALTERNATIVE = true;
+    SegmentListT segment_list(raw_route, EXTRACT_ROUTE, config.zoom_level, ALLOW_SIMPLIFICATION,
+                              facade);
     json_result.values["route_summary"] = SummarizeRoute(raw_route, segment_list);
     json_result.values["via_points"] = ListViaPoints(raw_route);
     json_result.values["via_indices"] = ListViaIndices(segment_list);
 
-    const auto getGeometry = [](const bool return_encoded,
-                                const SegmentListT &segments) -> osrm::json::Value
-    {
-        if (return_encoded)
-            return PolylineFormatter().printEncodedString(segments.Get());
-        else
-            return PolylineFormatter().printUnencodedString(segments.Get());
-    };
-
     if (config.geometry)
     {
-        json_result.values["route_geometry"] = getGeometry(config.encode_geometry, segment_list);
+        json_result.values["route_geometry"] = GetGeometry(config.encode_geometry, segment_list);
     }
 
     if (config.instructions)
     {
-        json_result.values["route_instructions"] = annotators::AnnotateRoute(segment_list.Get(), facade);
+        json_result.values["route_instructions"] =
+            annotators::AnnotateRoute(segment_list.Get(), facade);
     }
 
     RouteNames route_names;
-    ExtractRouteNames<DataFacade, detail::Segment> GenerateRouteNames;
+    RouteNameExtractor generate_route_names;
 
     if (raw_route.has_alternative())
     {
-        SegmentListT alternate_segment_list(raw_route, true, config.zoom_level, facade);
+        SegmentListT alternate_segment_list(raw_route, EXTRACT_ALTERNATIVE, config.zoom_level,
+                                            ALLOW_SIMPLIFICATION, facade);
 
         // Alternative Route Summaries are stored in an array to (down the line) allow multiple
         // alternatives
@@ -126,7 +133,7 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
         if (config.geometry)
         {
             osrm::json::Value alternate_geometry_string =
-                getGeometry(config.encode_geometry, alternate_segment_list);
+                GetGeometry(config.encode_geometry, alternate_segment_list);
             osrm::json::Array json_alternate_geometries_array;
             json_alternate_geometries_array.values.push_back(alternate_geometry_string);
             json_result.values["alternative_geometries"] = json_alternate_geometries_array;
@@ -135,14 +142,15 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
         if (config.instructions)
         {
             osrm::json::Array json_alternate_annotations_array;
-			json_alternate_annotations_array.values.push_back(annotators::AnnotateRoute(alternate_segment_list.Get(), facade));
+            json_alternate_annotations_array.values.push_back(
+                annotators::AnnotateRoute(alternate_segment_list.Get(), facade));
             json_result.values["alternative_instructions"] = json_alternate_annotations_array;
         }
 
         // generate names for both the main path and the alternative route
         auto path_segments = BuildRouteSegments(segment_list);
         auto alternate_segments = BuildRouteSegments(alternate_segment_list);
-        route_names = GenerateRouteNames(path_segments, alternate_segments, facade);
+        route_names = generate_route_names(path_segments, alternate_segments, facade);
 
         osrm::json::Array json_alternate_names_array;
         osrm::json::Array json_alternate_names;
@@ -158,7 +166,7 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
         // generate names for the main route on its own
         auto path_segments = BuildRouteSegments(segment_list);
         std::vector<detail::Segment> alternate_segments;
-        route_names = GenerateRouteNames(path_segments, alternate_segments, facade);
+        route_names = generate_route_names(path_segments, alternate_segments, facade);
     }
 
     osrm::json::Array json_route_names;
@@ -222,11 +230,20 @@ ApiResponseGenerator<DataFacadeT>::ListViaIndices(const SegmentListT &segment_li
 }
 
 template <typename DataFacadeT>
+osrm::json::Value ApiResponseGenerator<DataFacadeT>::GetGeometry(const bool return_encoded, const SegmentListT &segments) const
+{
+    if (return_encoded)
+        return PolylineFormatter().printEncodedString(segments.Get());
+    else
+        return PolylineFormatter().printUnencodedString(segments.Get());
+}
+
+template <typename DataFacadeT>
 std::vector<detail::Segment>
 ApiResponseGenerator<DataFacadeT>::BuildRouteSegments(const SegmentListT &segment_list) const
 {
     std::vector<detail::Segment> result;
-    for (const auto& segment : segment_list.Get())
+    for (const auto &segment : segment_list.Get())
     {
         auto current_turn = segment.turn_instruction;
         if (TurnInstructionsClass::TurnIsNecessary(current_turn) and
