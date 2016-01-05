@@ -160,7 +160,7 @@ template <class DataFacadeT> class ViaRoutePlugin final : public BasePlugin
         descriptor->Run(raw_route, json_result);
 		*/
 		osrm::engine::route::description::ApiResponseGenerator<DataFacadeT> generator( facade );
-		generator.describeRoute( route_parameters, raw_route, json_result );
+		generator.DescribeRoute( route_parameters, raw_route, json_result );
 
         // we can only know this after the fact, different SCC ids still
         // allow for connection in one direction.
