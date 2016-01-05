@@ -43,9 +43,11 @@ AnnotateRoute(const std::vector<SegmentInformation> &route_segments, DataFacadeT
     round_about = {std::numeric_limits<int32_t>::max(), 0, 0};
     std::string temp_dist, temp_length, temp_duration, temp_bearing, temp_instruction;
 
+	std::cout << "Processing segments: " << std::flush;
 	//Generate annotations for every segment
     for (const SegmentInformation &segment : route_segments)
     {
+	  std::cout << "." << std::flush;
         osrm::json::Array json_instruction_row;
         TurnInstruction current_instruction = segment.turn_instruction;
         if (TurnInstructionsClass::TurnIsNecessary(current_instruction))
@@ -109,6 +111,7 @@ AnnotateRoute(const std::vector<SegmentInformation> &route_segments, DataFacadeT
             ++necessary_segments_running_index;
         }
     }
+	std::cout << " done." << std::endl;
 
     osrm::json::Array json_last_instruction_row;
     temp_instruction =

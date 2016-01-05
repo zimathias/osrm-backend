@@ -2,6 +2,7 @@
 
 #include "osrm/coordinate.hpp"
 
+#include "engine/douglas_peucker.hpp"
 #include "engine/internal_route_result.hpp"
 #include "engine/phantom_node.hpp"
 #include "engine/segment_information.hpp"
@@ -23,7 +24,10 @@ template <typename DataFacadeT> class SegmentList
 {
   public:
     typedef DataFacadeT DataFacade;
-    SegmentList(const InternalRouteResult &raw_route, bool extract_alternative, DataFacade *facade);
+    SegmentList(const InternalRouteResult &raw_route,
+                bool extract_alternative,
+                const unsigned zoom_level,
+                DataFacade *facade);
 
     const std::vector<std::uint32_t> &GetViaIndices() const;
     std::uint32_t GetDistance() const;
@@ -32,11 +36,17 @@ template <typename DataFacadeT> class SegmentList
     std::vector<SegmentInformation> const &Get() const;
 
   private:
-    void ExtractRoute(const InternalRouteResult &raw_route, DataFacade *facade);
-    void ExtractAlternative(const InternalRouteResult &raw_route, DataFacade *facade);
+    void InitRoute(const PhantomNode &phantom_node, bool traversed_in_reverse);
+    void AddLeg(const std::vector<PathData> &leg_data,
+                const PhantomNode &target_node,
+                bool traversed_in_reverse,
+                bool is_via_leg,
+                DataFacade *facade);
 
-    void AppendSegment(const FixedPointCoordinate& coordinate, const PathData &path_point);
-    void Finalize(const InternalRouteResult &raw_route);
+    void AppendSegment(const FixedPointCoordinate &coordinate, const PathData &path_point);
+    void Finalize(bool extract_alternative,
+                  const InternalRouteResult &raw_route,
+                  const unsigned zoom_level);
 
     // journey length in tenth of a second
     std::uint32_t total_distance;
@@ -52,94 +62,69 @@ template <typename DataFacadeT> class SegmentList
 template <typename DataFacadeT>
 SegmentList<DataFacadeT>::SegmentList(const InternalRouteResult &raw_route,
                                       bool extract_alternative,
+                                      const unsigned zoom_level,
                                       DataFacade *facade)
     : total_distance(0), total_duration(0)
 {
-    if (extract_alternative)
-    {
-        ExtractAlternative(raw_route, facade);
-    }
-    else
-    {
-        ExtractRoute(raw_route, facade);
-    }
-
-	Finalize(raw_route);
-}
-
-template <typename DataFacadeT>
-void SegmentList<DataFacadeT>::ExtractRoute(const InternalRouteResult &raw_route,
-                                            DataFacade *facade)
-{
-    // only operate on valid routes
     if (not raw_route.is_valid())
         return;
 
+    if (extract_alternative)
     {
-        const auto source = raw_route.segment_end_coordinates.front().source_phantom;
-        const bool traversed_in_reverse = raw_route.source_traversed_in_reverse.front();
-        const auto segment_duration =
-            (traversed_in_reverse ? source.reverse_weight : source.forward_weight);
-        const auto travel_mode =
-            (traversed_in_reverse ? source.backward_travel_mode : source.forward_travel_mode);
-
-        AppendSegment(source.location, PathData(0, source.name_id, TurnInstruction::HeadOn,
-                                                segment_duration, travel_mode));
+        InitRoute(raw_route.segment_end_coordinates.front().source_phantom,
+                  raw_route.source_traversed_in_reverse.front());
+        AddLeg(raw_route.unpacked_alternative,
+               raw_route.segment_end_coordinates.back().target_phantom,
+               raw_route.alt_source_traversed_in_reverse.back(), false, facade);
     }
-
-    for (std::size_t raw_index = 0; raw_index < raw_route.unpacked_path_segments.size();
-         ++raw_index)
+    else
     {
-        // Get all the coordinates for the computed route
-        FixedPointCoordinate current_coordinate;
-        for (const PathData &path_data : raw_route.unpacked_path_segments[raw_index])
+        InitRoute(raw_route.segment_end_coordinates.front().source_phantom,
+                  raw_route.source_traversed_in_reverse.front());
+        for (std::size_t raw_index = 0; raw_index < raw_route.segment_end_coordinates.size();
+             ++raw_index)
         {
-            AppendSegment(facade->GetCoordinateOfNode(path_data.node), path_data);
+            AddLeg(raw_route.unpacked_path_segments[raw_index],
+                   raw_route.segment_end_coordinates[raw_index].target_phantom,
+                   raw_route.source_traversed_in_reverse[raw_index],
+                   raw_route.is_via_leg(raw_index), facade);
         }
-
-        const auto target = raw_route.segment_end_coordinates[raw_index].target_phantom;
-        const bool traversed_in_reverse = raw_route.target_traversed_in_reverse[raw_index];
-        const EdgeWeight segment_duration =
-            (traversed_in_reverse ? target.reverse_weight : target.forward_weight);
-        const TravelMode travel_mode =
-            (traversed_in_reverse ? target.backward_travel_mode : target.forward_travel_mode);
-        segments.emplace_back(target.location, target.name_id, segment_duration, 0.f,
-                              raw_route.is_via_leg(raw_index) ? TurnInstruction::ReachViaLocation
-                                                              : TurnInstruction::NoTurn,
-                              true, true, travel_mode);
     }
+
+    Finalize(extract_alternative, raw_route, zoom_level);
 }
 
 template <typename DataFacadeT>
-void SegmentList<DataFacadeT>::ExtractAlternative(const InternalRouteResult &raw_route,
-                                                  DataFacade *facade)
+void SegmentList<DataFacadeT>::InitRoute(const PhantomNode &node, bool traversed_in_reverse)
 {
-    { // build initial segment
-        const auto source = raw_route.segment_end_coordinates.front().source_phantom;
-        const bool traversed_in_reverse = raw_route.alt_source_traversed_in_reverse.front();
-        const auto segment_duration =
-            (traversed_in_reverse ? source.reverse_weight : source.forward_weight);
-        const auto travel_mode =
-            (traversed_in_reverse ? source.backward_travel_mode : source.forward_travel_mode);
+    const auto segment_duration =
+        (traversed_in_reverse ? node.reverse_weight : node.forward_weight);
+    const auto travel_mode =
+        (traversed_in_reverse ? node.backward_travel_mode : node.forward_travel_mode);
 
-        AppendSegment(source.location, PathData(0, source.name_id, TurnInstruction::HeadOn,
-                                                segment_duration, travel_mode));
-    }
-    // Get all the coordinates for the computed route
-    for (const PathData &path_data : raw_route.unpacked_alternative)
+    AppendSegment(node.location, PathData(0, node.name_id, TurnInstruction::HeadOn,
+                                          segment_duration, travel_mode));
+}
+
+template <typename DataFacadeT>
+void SegmentList<DataFacadeT>::AddLeg(const std::vector<PathData> &leg_data,
+                                      const PhantomNode &target_node,
+                                      bool traversed_in_reverse,
+                                      bool is_via_leg,
+                                      DataFacade *facade)
+{
+    for (const PathData &path_data : leg_data)
     {
         AppendSegment(facade->GetCoordinateOfNode(path_data.node), path_data);
     }
-    {
-        const auto target = raw_route.segment_end_coordinates.back().target_phantom;
-        const bool traversed_in_reverse = raw_route.target_traversed_in_reverse.back();
-        const EdgeWeight segment_duration =
-            (traversed_in_reverse ? target.reverse_weight : target.forward_weight);
-        const TravelMode travel_mode =
-            (traversed_in_reverse ? target.backward_travel_mode : target.forward_travel_mode);
-        segments.emplace_back(target.location, target.name_id, segment_duration, 0.f,
-                              TurnInstruction::NoTurn, true, true, travel_mode);
-    }
+
+    const EdgeWeight segment_duration =
+        (traversed_in_reverse ? target_node.reverse_weight : target_node.forward_weight);
+    const TravelMode travel_mode =
+        (traversed_in_reverse ? target_node.backward_travel_mode : target_node.forward_travel_mode);
+    segments.emplace_back(target_node.location, target_node.name_id, segment_duration, 0.f,
+                          is_via_leg ? TurnInstruction::ReachViaLocation : TurnInstruction::NoTurn,
+                          true, true, travel_mode);
 }
 
 template <typename DataFacadeT> std::uint32_t SegmentList<DataFacadeT>::GetDistance() const
@@ -180,23 +165,31 @@ void SegmentList<DataFacadeT>::AppendSegment(const FixedPointCoordinate &coordin
     }
 
     // make sure mode changes are announced, even when there otherwise is no turn
-    const TurnInstruction turn = [&]() -> TurnInstruction
+    auto getTurn = [](const PathData &path_point, const TravelMode previous_mode )
     {
         if (TurnInstruction::NoTurn == path_point.turn_instruction &&
-            segments.front().travel_mode != path_point.travel_mode &&
+            previous_mode != path_point.travel_mode &&
             path_point.segment_duration > 0)
         {
             return TurnInstruction::GoStraight;
         }
         return path_point.turn_instruction;
-    }();
+    };
+
+	auto turn = getTurn( path_point, segments.back().travel_mode );
 
     segments.emplace_back(coordinate, path_point.name_id, path_point.segment_duration, 0.f, turn,
                           path_point.travel_mode);
 }
 
-template <typename DataFacadeT> void SegmentList<DataFacadeT>::Finalize(const InternalRouteResult& raw_route)
+template <typename DataFacadeT>
+void SegmentList<DataFacadeT>::Finalize(bool extract_alternative,
+                                        const InternalRouteResult &raw_route,
+                                        const unsigned zoom_level)
 {
+    if (segments.empty())
+        return;
+
     segments[0].length = 0.f;
     for (const auto i : osrm::irange<std::size_t>(1, segments.size()))
     {
@@ -230,10 +223,12 @@ template <typename DataFacadeT> void SegmentList<DataFacadeT>::Finalize(const In
     }
 
     total_distance = static_cast<std::uint32_t>(round(path_length));
-	total_duration = static_cast<std::uint32_t>(round(raw_route.shortest_path_length / 10.));
+    total_duration = static_cast<std::uint32_t>(round(
+        (extract_alternative ? raw_route.alternative_path_length : raw_route.shortest_path_length) /
+        10.));
 
-	auto start_phantom = raw_route.segment_end_coordinates.front().source_phantom;
-	auto target_phantom = raw_route.segment_end_coordinates.back().target_phantom;
+    auto start_phantom = raw_route.segment_end_coordinates.front().source_phantom;
+    auto target_phantom = raw_route.segment_end_coordinates.back().target_phantom;
 
     // Post-processing to remove empty or nearly empty path segments
     if (segments.size() > 2 && std::numeric_limits<float>::epsilon() > segments.back().length &&
@@ -242,7 +237,9 @@ template <typename DataFacadeT> void SegmentList<DataFacadeT>::Finalize(const In
         segments.pop_back();
         segments.back().necessary = true;
         segments.back().turn_instruction = TurnInstruction::NoTurn;
-        target_phantom.name_id = (segments.end() - 2)->name_id;
+        target_phantom.name_id =
+            (segments.end() - 2)
+                ->name_id; // TODO check whether this -2 is desired after the pop-back
     }
 
     if (segments.size() > 2 && std::numeric_limits<float>::epsilon() > segments.front().length &&
@@ -253,9 +250,14 @@ template <typename DataFacadeT> void SegmentList<DataFacadeT>::Finalize(const In
         segments.front().necessary = true;
         start_phantom.name_id = segments.front().name_id;
     }
+
+    DouglasPeucker polyline_generalizer;
+    polyline_generalizer.Run(segments.begin(), segments.end(), zoom_level);
+
     unsigned necessary_segments = 0; // a running index that counts the necessary pieces
-    const auto markNecessarySegments =
-        [this, &necessary_segments](SegmentInformation &first, const SegmentInformation &second)
+    via_indices.push_back(0);
+    const auto markNecessarySegments = [this, &necessary_segments](SegmentInformation &first,
+                                                                   const SegmentInformation &second)
     {
         if (!first.necessary)
             return;
@@ -276,6 +278,8 @@ template <typename DataFacadeT> void SegmentList<DataFacadeT>::Finalize(const In
 
     // calculate which segments are necessary and update segments for bearings
     osrm::for_each_pair(segments, markNecessarySegments);
+    std::cout << "necessary segments: " << necessary_segments << " of " << segments.size()
+              << std::endl;
     via_indices.push_back(necessary_segments);
 
     BOOST_ASSERT(via_indices.size() >= 2);

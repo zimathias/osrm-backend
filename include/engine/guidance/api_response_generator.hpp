@@ -86,7 +86,7 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
                                                       const InternalRouteResult &raw_route,
                                                       osrm::json::Object &json_result)
 {
-    SegmentListT segment_list(raw_route, false, facade);
+    SegmentListT segment_list(raw_route, false, config.zoom_level, facade);
     json_result.values["route_summary"] = SummarizeRoute(raw_route, segment_list);
     json_result.values["via_points"] = ListViaPoints(raw_route);
     json_result.values["via_indices"] = ListViaIndices(segment_list);
@@ -102,22 +102,23 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
 
     if (config.geometry)
     {
+	  std::cout << "Calculating Geometry" << std::endl;
         json_result.values["route_geometry"] = getGeometry(config.encode_geometry, segment_list);
     }
 
     if (config.instructions)
     {
+	  std::cout << "Calculating Instructions" << std::endl;
         json_result.values["route_instructions"] = AnnotateRoute(segment_list.Get(), facade);
     }
 
     RouteNames route_names;
     ExtractRouteNames<DataFacade, detail::Segment> GenerateRouteNames;
 
-    if (INVALID_EDGE_WEIGHT != raw_route.alternative_path_length)
+    if (raw_route.has_alternative())
     {
-        json_result.values["found_alternative"] = osrm::json::True();
-
-        SegmentListT alternate_segment_list(raw_route, true, facade);
+	  std::cout << "Calculating Alternative Information" << std::endl;
+        SegmentListT alternate_segment_list(raw_route, true, config.zoom_level, facade);
 
         // Alternative Route Summaries are stored in an array to (down the line) allow multiple
         // alternatives
@@ -138,8 +139,9 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
 
         if (config.instructions)
         {
-            json_result.values["alternative_instructions"] =
-                AnnotateRoute(alternate_segment_list.Get(), facade);
+            osrm::json::Array json_alternate_annotations_array;
+			json_alternate_annotations_array.values.push_back(AnnotateRoute(alternate_segment_list.Get(), facade));
+            json_result.values["alternative_instructions"] = json_alternate_annotations_array;
         }
 
         // generate names for both the main path and the alternative route
@@ -153,6 +155,7 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
         json_alternate_names.values.push_back(route_names.alternative_path_name_2);
         json_alternate_names_array.values.push_back(json_alternate_names);
         json_result.values["alternative_names"] = json_alternate_names_array;
+        json_result.values["found_alternative"] = osrm::json::True();
     }
     else
     {
@@ -160,15 +163,19 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
         // generate names for the main route on its own
         auto path_segments = BuildRouteSegments(segment_list);
         std::vector<detail::Segment> alternate_segments;
+		std::cout << "Generating Route Names." << std::endl;
         route_names = GenerateRouteNames(path_segments, alternate_segments, facade);
+		std::cout << "done." << std::endl;
     }
 
+	std::cout << "Calculating Route Names and Hints" << std::endl;
     osrm::json::Array json_route_names;
     json_route_names.values.push_back(route_names.shortest_path_name_1);
     json_route_names.values.push_back(route_names.shortest_path_name_2);
     json_result.values["route_name"] = json_route_names;
 
     json_result.values["hint_data"] = BuildHintData(raw_route);
+	std::cout << "Done." << std::endl;
 }
 
 template <typename DataFacadeT>
@@ -177,8 +184,6 @@ ApiResponseGenerator<DataFacadeT>::SummarizeRoute(const InternalRouteResult &raw
                                                   const SegmentListT &segment_list) const
 {
     osrm::json::Object json_route_summary;
-    json_route_summary.values["total_distance"] = segment_list.GetDistance();
-    json_route_summary.values["total_time"] = segment_list.GetDuration();
     if (not raw_route.segment_end_coordinates.empty())
     {
         auto start_name_id = raw_route.segment_end_coordinates.front().source_phantom.name_id;
@@ -186,6 +191,8 @@ ApiResponseGenerator<DataFacadeT>::SummarizeRoute(const InternalRouteResult &raw
         auto destination_name_id = raw_route.segment_end_coordinates.back().target_phantom.name_id;
         json_route_summary.values["end_point"] = facade->get_name_for_id(destination_name_id);
     }
+    json_route_summary.values["total_time"] = segment_list.GetDuration();
+    json_route_summary.values["total_distance"] = segment_list.GetDistance();
     return json_route_summary;
 }
 
@@ -218,7 +225,7 @@ osrm::json::Array
 ApiResponseGenerator<DataFacadeT>::ListViaIndices(const SegmentListT &segment_list) const
 {
     osrm::json::Array via_indices;
-    via_indices.values.insert(via_indices.values.begin(), segment_list.GetViaIndices().begin(),
+    via_indices.values.insert(via_indices.values.end(), segment_list.GetViaIndices().begin(),
                               segment_list.GetViaIndices().end());
     return via_indices;
 }
@@ -228,7 +235,7 @@ std::vector<detail::Segment>
 ApiResponseGenerator<DataFacadeT>::BuildRouteSegments(const SegmentListT &segment_list) const
 {
     std::vector<detail::Segment> result;
-    for (auto segment : segment_list.Get())
+    for (const auto& segment : segment_list.Get())
     {
         auto current_turn = segment.turn_instruction;
         if (TurnInstructionsClass::TurnIsNecessary(current_turn) and
