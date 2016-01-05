@@ -46,13 +46,9 @@ struct InternalRouteResult
     int shortest_path_length;
     int alternative_path_length;
 
-	bool is_valid() const {
-	  return INVALID_EDGE_WEIGHT != shortest_path_length;
-	}
+    bool is_valid() const { return INVALID_EDGE_WEIGHT != shortest_path_length; }
 
-	bool has_alternative() const {
-	  return INVALID_EDGE_WEIGHT != alternative_path_length;
-	}
+    bool has_alternative() const { return INVALID_EDGE_WEIGHT != alternative_path_length; }
 
     bool is_via_leg(const std::size_t leg) const
     {

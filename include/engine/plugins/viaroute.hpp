@@ -1,9 +1,10 @@
 #ifndef VIA_ROUTE_HPP
 #define VIA_ROUTE_HPP
 
+#include "engine/plugins/plugin_base.hpp"
+
 #include "engine/guidance/api_response_generator.hpp"
 #include "engine/object_encoder.hpp"
-#include "engine/plugins/plugin_base.hpp"
 #include "engine/search_engine.hpp"
 #include "engine/descriptors/descriptor_base.hpp"
 #include "engine/descriptors/gpx_descriptor.hpp"
