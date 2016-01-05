@@ -1,15 +1,15 @@
 #ifndef VIA_ROUTE_HPP
 #define VIA_ROUTE_HPP
 
-#include "engine/guidance/api_response_generator.hpp"
+
 
 #include "engine/plugins/plugin_base.hpp"
 
+#include "engine/guidance/api_response_generator.hpp"
 #include "engine/object_encoder.hpp"
 #include "engine/search_engine.hpp"
 #include "engine/descriptors/descriptor_base.hpp"
 #include "engine/descriptors/gpx_descriptor.hpp"
-#include "engine/descriptors/json_descriptor.hpp"
 #include "util/integer_range.hpp"
 #include "util/json_renderer.hpp"
 #include "util/make_unique.hpp"
