@@ -1,12 +1,9 @@
 #ifndef VIA_ROUTE_HPP
 #define VIA_ROUTE_HPP
 
-
-
-#include "engine/plugins/plugin_base.hpp"
-
 #include "engine/guidance/api_response_generator.hpp"
 #include "engine/object_encoder.hpp"
+#include "engine/plugins/plugin_base.hpp"
 #include "engine/search_engine.hpp"
 #include "engine/descriptors/descriptor_base.hpp"
 #include "engine/descriptors/gpx_descriptor.hpp"
@@ -15,11 +12,7 @@
 #include "util/make_unique.hpp"
 #include "util/simple_logger.hpp"
 #include "util/timing_util.hpp"
-
 #include "osrm/json_container.hpp"
-
-//TODO remove
-#include "util/json_renderer.hpp"
 
 #include <cstdlib>
 

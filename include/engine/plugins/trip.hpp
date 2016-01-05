@@ -12,7 +12,7 @@
 #include "util/matrix_graph_wrapper.hpp" // wrapper to use tarjan
                                          // scc on dist table
 #include "engine/guidance/api_response_generator.hpp"
-#include "engine/descriptors/descriptor_base.hpp"          // to make json output, holds descriptor table
+#include "engine/descriptors/descriptor_base.hpp" // to make json output, holds descriptor table
 #include "util/make_unique.hpp"
 #include "util/timing_util.hpp" // to time runtime
 //#include "util/simple_logger.hpp"      // for logging output
@@ -346,9 +346,9 @@ template <class DataFacadeT> class RoundTripPlugin final : public BasePlugin
         {
             osrm::json::Object scc_trip;
 
-			//annotate comp_route[i] as a json trip
-            osrm::engine::guidance::ApiResponseGenerator<DataFacadeT> generator( facade );
-			generator.DescribeRoute( route_parameters, comp_route[i], scc_trip );
+            // annotate comp_route[i] as a json trip
+            osrm::engine::guidance::ApiResponseGenerator<DataFacadeT> generator(facade);
+            generator.DescribeRoute(route_parameters, comp_route[i], scc_trip);
 
             // set permutation output
             SetLocPermutationOutput(route_result[i], scc_trip);
