@@ -205,8 +205,8 @@ void SegmentList<DataFacadeT>::Finalize(const bool extract_alternative,
     {
         // move down names by one, q&d hack
         segments[i - 1].name_id = segments[i].name_id;
-        segments[i].length = coordinate_calculation::great_circle_distance(segments[i - 1].location,
-                                                                           segments[i].location);
+        segments[i].length = coordinate_calculation::greatCircleDistance(segments[i - 1].location,
+                                                                         segments[i].location);
     }
 
     float segment_length = 0.;
