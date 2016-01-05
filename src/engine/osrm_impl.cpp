@@ -28,6 +28,11 @@
 #include <utility>
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+
 OSRM::OSRM_impl::OSRM_impl(LibOSRMConfig &lib_config)
 {
     if (lib_config.use_shared_memory)
@@ -137,4 +142,6 @@ OSRM::~OSRM() {}
 int OSRM::RunQuery(const RouteParameters &route_parameters, osrm::json::Object &json_result)
 {
     return OSRM_pimpl_->RunQuery(route_parameters, json_result);
+}
+}
 }

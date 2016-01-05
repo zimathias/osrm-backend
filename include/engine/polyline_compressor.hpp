@@ -8,6 +8,11 @@ struct SegmentInformation;
 #include <string>
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+
 class PolylineCompressor
 {
   private:
@@ -20,5 +25,8 @@ class PolylineCompressor
 
     std::vector<FixedPointCoordinate> decode_string(const std::string &geometry_string) const;
 };
+
+}
+}
 
 #endif /* POLYLINECOMPRESSOR_H_ */

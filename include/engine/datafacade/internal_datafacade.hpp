@@ -22,6 +22,13 @@
 
 #include <limits>
 
+namespace osrm
+{
+namespace engine
+{
+namespace datafacade
+{
+
 template <class EdgeDataT> class InternalDataFacade final : public BaseDataFacade<EdgeDataT>
 {
 
@@ -437,5 +444,9 @@ template <class EdgeDataT> class InternalDataFacade final : public BaseDataFacad
 
     std::string GetTimestamp() const override final { return m_timestamp; }
 };
+
+}
+}
+}
 
 #endif // INTERNAL_DATAFACADE_HPP

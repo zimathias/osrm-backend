@@ -5,6 +5,11 @@
 #include "util/version.hpp"
 #include "util/simple_logger.hpp"
 
+namespace osrm
+{
+namespace tools
+{
+
 void deleteRegion(const SharedDataType region)
 {
     if (SharedMemory::RegionExists(region) && !SharedMemory::Remove(region))
@@ -72,4 +77,6 @@ int main()
         SimpleLogger().Write(logWARNING) << "[excpetion] " << e.what();
     }
     return 0;
+}
+}
 }

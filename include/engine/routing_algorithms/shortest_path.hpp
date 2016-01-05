@@ -10,6 +10,13 @@
 
 #include <boost/assert.hpp>
 
+namespace osrm
+{
+namespace engine
+{
+namespace routing_algorithms
+{
+
 template <class DataFacadeT>
 class ShortestPathRouting final
     : public BasicRoutingInterface<DataFacadeT, ShortestPathRouting<DataFacadeT>>
@@ -514,5 +521,9 @@ class ShortestPathRouting final
         }
     }
 };
+
+}
+}
+}
 
 #endif /* SHORTEST_PATH_HPP */

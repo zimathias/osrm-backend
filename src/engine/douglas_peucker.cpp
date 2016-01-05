@@ -9,6 +9,11 @@
 #include <algorithm>
 #include <iterator>
 
+namespace osrm
+{
+namespace engine
+{
+
 namespace
 {
 struct CoordinatePairCalculator
@@ -134,4 +139,6 @@ void DouglasPeucker::Run(RandomAccessIt begin, RandomAccessIt end, const unsigne
             }
         }
     }
+}
+}
 }

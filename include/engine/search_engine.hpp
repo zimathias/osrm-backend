@@ -10,6 +10,11 @@
 
 #include <type_traits>
 
+namespace osrm
+{
+namespace engine
+{
+
 template <class DataFacadeT> class SearchEngine
 {
   private:
@@ -36,5 +41,8 @@ template <class DataFacadeT> class SearchEngine
 
     ~SearchEngine() {}
 };
+
+}
+}
 
 #endif // SEARCH_ENGINE_HPP

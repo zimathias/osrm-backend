@@ -6,6 +6,11 @@ struct FixedPointCoordinate;
 #include <string>
 #include <utility>
 
+namespace osrm
+{
+namespace util
+{
+
 namespace coordinate_calculation
 {
 double haversineDistance(const int lat1, const int lon1, const int lat2, const int lon2);
@@ -47,6 +52,9 @@ double radToDeg(const double radian);
 
 double bearing(const FixedPointCoordinate &first_coordinate,
                const FixedPointCoordinate &second_coordinate);
+}
+
+}
 }
 
 #endif // COORDINATE_CALCULATION

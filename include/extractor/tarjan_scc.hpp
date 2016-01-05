@@ -22,6 +22,11 @@
 #include <stack>
 #include <vector>
 
+namespace osrm
+{
+namespace extractor
+{
+
 template <typename GraphT> class TarjanSCC
 {
     struct TarjanStackFrame
@@ -173,5 +178,8 @@ template <typename GraphT> class TarjanSCC
 
     unsigned get_component_id(const NodeID node) const { return components_index[node]; }
 };
+
+}
+}
 
 #endif /* TARJAN_SCC_HPP */

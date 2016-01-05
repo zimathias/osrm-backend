@@ -17,6 +17,13 @@
 #include <string>
 #include <boost/optional.hpp>
 
+namespace osrm
+{
+namespace engine
+{
+namespace datafacade
+{
+
 using EdgeRange = osrm::range<EdgeID>;
 
 template <class EdgeDataT> class BaseDataFacade
@@ -95,5 +102,9 @@ template <class EdgeDataT> class BaseDataFacade
 
     virtual std::string GetTimestamp() const = 0;
 };
+
+}
+}
+}
 
 #endif // DATAFACADE_BASE_HPP

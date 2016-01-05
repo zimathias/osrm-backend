@@ -10,6 +10,11 @@
 #include <utility>
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+
 struct PhantomNode
 {
     PhantomNode(NodeID forward_node_id,
@@ -131,6 +136,9 @@ inline std::ostream &operator<<(std::ostream &out, const PhantomNode &pn)
         << "pos: " << pn.fwd_segment_position << ", "
         << "loc: " << pn.location;
     return out;
+}
+
+}
 }
 
 #endif // PHANTOM_NODES_H

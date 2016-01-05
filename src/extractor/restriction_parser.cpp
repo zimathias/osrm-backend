@@ -19,6 +19,11 @@
 #include <algorithm>
 #include <iterator>
 
+namespace osrm
+{
+namespace extractor
+{
+
 namespace {
 int luaErrorCallback(lua_State *lua_state)
 {
@@ -221,4 +226,6 @@ bool RestrictionParser::ShouldIgnoreRestriction(const std::string &except_tag_st
                                   std::find(std::begin(restriction_exceptions),
                                             std::end(restriction_exceptions), current_string);
                        });
+}
+}
 }

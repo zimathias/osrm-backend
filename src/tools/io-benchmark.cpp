@@ -20,6 +20,11 @@
 #include <random>
 #include <vector>
 
+namespace osrm
+{
+namespace tools
+{
+
 const unsigned number_of_elements = 268435456;
 
 struct Statistics
@@ -318,4 +323,6 @@ int main(int argc, char *argv[])
     }
     return 0;
 #endif
+}
+}
 }

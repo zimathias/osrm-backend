@@ -16,6 +16,13 @@
 #include <limits>
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+namespace descriptors
+{
+
 struct PathData;
 /* This class is fed with all way segments in consecutive order
  *  and produces the description plus the encoded polyline */
@@ -65,5 +72,9 @@ class DescriptionFactory
 
     void Run(const unsigned zoom_level);
 };
+
+}
+}
+}
 
 #endif /* DESCRIPTION_FACTORY_HPP */

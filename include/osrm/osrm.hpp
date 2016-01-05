@@ -30,15 +30,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <memory>
 
+namespace osrm
+{
+
 struct LibOSRMConfig;
 struct RouteParameters;
 
-namespace osrm
-{
 namespace json
 {
 struct Object;
-}
 }
 
 class OSRM
@@ -52,5 +52,7 @@ class OSRM
     ~OSRM(); // needed because we need to define it with the implementation of OSRM_impl
     int RunQuery(const RouteParameters &route_parameters, osrm::json::Object &json_result);
 };
+
+}
 
 #endif // OSRM_HPP

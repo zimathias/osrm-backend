@@ -16,6 +16,8 @@
 
 namespace osrm
 {
+namespace engine
+{
 namespace trip
 {
 
@@ -76,6 +78,8 @@ std::vector<NodeID> BruteForceTrip(const NodeIDIterator start,
     return route;
 }
 
-} // end namespace trip
-} // end namespace osrm
+}
+}
+}
+
 #endif // TRIP_BRUTE_FORCE_HPP

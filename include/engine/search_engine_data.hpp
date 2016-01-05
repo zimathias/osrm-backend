@@ -6,6 +6,11 @@
 #include "util/typedefs.hpp"
 #include "util/binary_heap.hpp"
 
+namespace osrm
+{
+namespace engine
+{
+
 struct HeapData
 {
     NodeID parent;
@@ -30,5 +35,8 @@ struct SearchEngineData
 
     void InitializeOrClearThirdThreadLocalStorage(const unsigned number_of_nodes);
 };
+
+}
+}
 
 #endif // SEARCH_ENGINE_DATA_HPP

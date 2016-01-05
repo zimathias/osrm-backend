@@ -8,6 +8,11 @@
 
 #include <tbb/task_scheduler_init.h>
 
+namespace osrm
+{
+namespace contractor
+{
+
 return_code
 ContractorOptions::ParseArguments(int argc, char *argv[], ContractorConfig &contractor_config)
 {
@@ -118,4 +123,6 @@ void ContractorOptions::GenerateOutputFilesNames(ContractorConfig &contractor_co
         contractor_config.osrm_input_path.string() + ".edge_segment_lookup";
     contractor_config.edge_penalty_path =
         contractor_config.osrm_input_path.string() + ".edge_penalties";
+}
+}
 }

@@ -5,6 +5,11 @@
 #include "extractor/edge_based_graph_factory.hpp"
 #include "extractor/graph_compressor.hpp"
 
+namespace osrm
+{
+namespace extractor
+{
+
 class extractor
 {
   public:
@@ -36,4 +41,7 @@ class extractor
                              size_t const max_edge_id,
                              DeallocatingVector<EdgeBasedEdge> const &edge_based_edge_list);
 };
+}
+}
+
 #endif /* EXTRACTOR_HPP */

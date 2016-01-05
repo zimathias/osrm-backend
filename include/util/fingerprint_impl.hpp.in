@@ -13,6 +13,11 @@
 #cmakedefine MD5GRAPH "${MD5GRAPH}"
 #cmakedefine MD5OBJECTS "${MD5OBJECTS}"
 
+namespace osrm
+{
+namespace util
+{
+
 FingerPrint FingerPrint::GetValid()
 {
     FingerPrint fingerprint;
@@ -82,4 +87,7 @@ bool FingerPrint::TestQueryObjects(const FingerPrint &other) const
         throw osrm::exception("missing magic number. Check or reprocess the file");
     }
     return std::equal(md5_objects, md5_objects + 32, other.md5_objects);
+}
+
+}
 }

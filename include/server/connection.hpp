@@ -14,6 +14,11 @@
 #include <memory>
 #include <vector>
 
+namespace osrm
+{
+namespace server
+{
+
 // workaround for incomplete std::shared_ptr compatibility in old boost versions
 #if BOOST_VERSION < 105300 || defined BOOST_NO_CXX11_SMART_PTR
 
@@ -64,5 +69,8 @@ class Connection : public std::enable_shared_from_this<Connection>
 };
 
 } // namespace http
+
+}
+}
 
 #endif // CONNECTION_HPP

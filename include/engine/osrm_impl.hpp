@@ -14,6 +14,11 @@ struct RouteParameters;
 #include <unordered_map>
 #include <string>
 
+namespace osrm
+{
+namespace engine
+{
+
 struct SharedBarriers;
 template <class EdgeDataT> class BaseDataFacade;
 
@@ -40,5 +45,8 @@ class OSRM::OSRM_impl final
     // increase number of concurrent queries
     void increase_concurrent_query_count();
 };
+
+}
+}
 
 #endif // OSRM_IMPL_HPP

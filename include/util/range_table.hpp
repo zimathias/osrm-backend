@@ -7,6 +7,11 @@
 
 #include <fstream>
 #include <array>
+
+namespace osrm
+{
+namespace util
+{
 /*
  * These pre-declarations are needed because parsing C++ is hard
  * and otherwise the compiler gets confused.
@@ -227,6 +232,9 @@ std::istream &operator>>(std::istream &in, RangeTable<BLOCK_SIZE, USE_SHARED_MEM
     // read blocks
     in.read((char *)table.diff_blocks.data(), BLOCK_SIZE * number_of_blocks);
     return in;
+}
+
+}
 }
 
 #endif // RANGE_TABLE_HPP

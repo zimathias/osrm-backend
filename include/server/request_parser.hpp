@@ -7,6 +7,11 @@
 
 #include <tuple>
 
+namespace osrm
+{
+namespace server
+{
+
 namespace http
 {
 
@@ -67,5 +72,8 @@ class RequestParser
 };
 
 } // namespace http
+
+}
+}
 
 #endif // REQUEST_PARSER_HPP

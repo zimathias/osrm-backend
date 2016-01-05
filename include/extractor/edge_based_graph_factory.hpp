@@ -25,6 +25,11 @@
 
 #include <boost/filesystem/fstream.hpp>
 
+namespace osrm
+{
+namespace extractor
+{
+
 struct lua_State;
 
 class EdgeBasedGraphFactory
@@ -112,5 +117,8 @@ class EdgeBasedGraphFactory
     void FlushVectorToStream(std::ofstream &edge_data_file,
                              std::vector<OriginalEdgeData> &original_edge_data_vector) const;
 };
+
+}
+}
 
 #endif /* EDGE_BASED_GRAPH_FACTORY_HPP_ */

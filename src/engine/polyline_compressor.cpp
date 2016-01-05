@@ -3,6 +3,11 @@
 
 #include "osrm/coordinate.hpp"
 
+namespace osrm
+{
+namespace engine
+{
+
 std::string PolylineCompressor::encode_vector(std::vector<int> &numbers) const
 {
     std::string output;
@@ -99,4 +104,6 @@ PolylineCompressor::decode_string(const std::string &geometry_string) const
     }
 
     return new_coordinates;
+}
+}
 }

@@ -7,6 +7,11 @@
 
 #include <cmath>
 
+namespace osrm
+{
+namespace extractor
+{
+
 RasterSource::RasterSource(RasterGrid _raster_data,
                            std::size_t _width,
                            std::size_t _height,
@@ -148,4 +153,6 @@ SourceContainer::getRasterInterpolateFromSource(unsigned int source_id, int lon,
 
     const auto &found = LoadedSources[source_id];
     return found.getRasterInterpolate(lon, lat);
+}
+}
 }

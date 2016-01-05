@@ -6,6 +6,11 @@
 #include <mutex>
 #include <tbb/enumerable_thread_specific.h>
 
+namespace osrm
+{
+namespace extractor
+{
+
 struct lua_State;
 
 /**
@@ -29,5 +34,8 @@ class ScriptingEnvironment
     std::string file_name;
     tbb::enumerable_thread_specific<std::shared_ptr<lua_State>> script_contexts;
 };
+
+}
+}
 
 #endif /* SCRIPTING_ENVIRONMENT_HPP */

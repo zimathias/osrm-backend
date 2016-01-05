@@ -2,6 +2,13 @@
 
 #include <string>
 
+namespace osrm
+{
+namespace server
+{
+namespace http
+{
+
 namespace http
 {
 
@@ -100,4 +107,7 @@ boost::asio::const_buffer reply::status_to_buffer(const reply::status_type statu
 }
 
 reply::reply() : status(ok) {}
+}
+}
+}
 }

@@ -23,6 +23,13 @@
 #include <string>
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+namespace plugins
+{
+
 template <class DataFacadeT> class ViaRoutePlugin final : public BasePlugin
 {
   private:
@@ -181,5 +188,9 @@ template <class DataFacadeT> class ViaRoutePlugin final : public BasePlugin
         return Status::Ok;
     }
 };
+
+}
+}
+}
 
 #endif // VIA_ROUTE_HPP

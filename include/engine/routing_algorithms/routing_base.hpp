@@ -10,6 +10,13 @@
 
 #include <stack>
 
+namespace osrm
+{
+namespace engine
+{
+namespace routing_algorithms
+{
+
 SearchEngineData::SearchEngineHeapPtr SearchEngineData::forward_heap_1;
 SearchEngineData::SearchEngineHeapPtr SearchEngineData::reverse_heap_1;
 SearchEngineData::SearchEngineHeapPtr SearchEngineData::forward_heap_2;
@@ -658,5 +665,9 @@ template <class DataFacadeT, class Derived> class BasicRoutingInterface
         return distance;
     }
 };
+
+}
+}
+}
 
 #endif // ROUTING_BASE_HPP

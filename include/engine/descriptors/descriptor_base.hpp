@@ -14,6 +14,13 @@
 #include <unordered_map>
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+namespace descriptors
+{
+
 struct DescriptorTable : public std::unordered_map<std::string, unsigned>
 {
     unsigned get_id(const std::string &key)
@@ -56,5 +63,9 @@ template <class DataFacadeT> class BaseDescriptor
     virtual void Run(const InternalRouteResult &raw_route, osrm::json::Object &json_result) = 0;
     virtual void SetConfig(const DescriptorConfig &c) = 0;
 };
+
+}
+}
+}
 
 #endif // DESCRIPTOR_BASE_HPP

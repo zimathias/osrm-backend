@@ -10,6 +10,11 @@
 #include <string>
 #include <vector>
 
+namespace osrm
+{
+namespace server
+{
+
 namespace http
 {
 
@@ -139,5 +144,7 @@ std::vector<char> Connection::compress_buffers(const std::vector<char> &uncompre
     boost::iostreams::close(gzip_stream);
 
     return compressed_data;
+}
+}
 }
 }

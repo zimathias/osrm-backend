@@ -12,6 +12,11 @@
 #include <unordered_map>
 #include <fstream>
 #include <string>
+
+namespace osrm
+{
+namespace util
+{
 const static unsigned INIT_OK_START_ENGINE = 0;
 const static unsigned INIT_OK_DO_NOT_START_ENGINE = 1;
 const static unsigned INIT_FAILED = -1;
@@ -252,6 +257,9 @@ GenerateServerProgramOptions(const int argc,
 
     SimpleLogger().Write() << visible_options;
     return INIT_OK_DO_NOT_START_ENGINE;
+}
+
+}
 }
 
 #endif // ROUTED_OPTIONS_HPP

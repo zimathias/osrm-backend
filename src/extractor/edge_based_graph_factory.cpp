@@ -16,6 +16,11 @@
 #include <iomanip>
 #include <limits>
 
+namespace osrm
+{
+namespace extractor
+{
+
 EdgeBasedGraphFactory::EdgeBasedGraphFactory(
     std::shared_ptr<NodeBasedDynamicGraph> node_based_graph,
     const CompressedEdgeContainer &compressed_edge_container,
@@ -672,4 +677,6 @@ TurnInstruction EdgeBasedGraphFactory::AnalyzeTurn(const NodeID node_u,
     }
 
     return TurnInstructionsClass::GetTurnDirectionOfInstruction(angle);
+}
+}
 }

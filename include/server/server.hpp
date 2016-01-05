@@ -18,6 +18,11 @@
 #include <vector>
 #include <string>
 
+namespace osrm
+{
+namespace server
+{
+
 class Server
 {
   public:
@@ -88,5 +93,8 @@ class Server
     std::shared_ptr<http::Connection> new_connection;
     RequestHandler request_handler;
 };
+
+}
+}
 
 #endif // SERVER_HPP

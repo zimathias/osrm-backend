@@ -9,6 +9,11 @@
 
 #include <memory>
 
+namespace osrm
+{
+namespace util
+{
+
 struct NodeBasedEdgeData
 {
     NodeBasedEdgeData()
@@ -77,6 +82,9 @@ NodeBasedDynamicGraphFromEdges(std::size_t number_of_nodes,
         static_cast<NodeBasedDynamicGraph::NodeIterator>(number_of_nodes), edges_list);
 
     return graph;
+}
+
+}
 }
 
 #endif // NODE_BASED_GRAPH_HPP

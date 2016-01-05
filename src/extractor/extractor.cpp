@@ -46,6 +46,11 @@
 #include <unordered_map>
 #include <vector>
 
+namespace osrm
+{
+namespace extractor
+{
+
 /**
  * TODO: Refactor this function into smaller functions for better readability.
  *
@@ -608,4 +613,6 @@ void extractor::WriteEdgeBasedGraph(std::string const &output_file_filename,
 
     SimpleLogger().Write() << "Processed " << number_of_used_edges << " edges";
     file_out_stream.close();
+}
+}
 }

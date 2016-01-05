@@ -8,6 +8,11 @@
 #include <string>
 #include <vector>
 
+namespace osrm
+{
+namespace extractor
+{
+
 struct lua_State;
 namespace osmium
 {
@@ -46,5 +51,8 @@ class RestrictionParser
     std::vector<std::string> restriction_exceptions;
     bool use_turn_restrictions;
 };
+
+}
+}
 
 #endif /* RESTRICTION_PARSER_HPP */

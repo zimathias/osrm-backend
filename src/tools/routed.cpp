@@ -20,6 +20,11 @@
 #include <new>
 #include <thread>
 
+namespace osrm
+{
+namespace tools
+{
+
 #ifdef _WIN32
 boost::function0<void> console_ctrl_function;
 
@@ -168,4 +173,6 @@ catch (const std::exception &e)
 {
     SimpleLogger().Write(logWARNING) << "[exception] " << e.what();
     return EXIT_FAILURE;
+}
+}
 }

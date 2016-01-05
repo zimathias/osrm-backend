@@ -10,6 +10,11 @@
 
 #include <string>
 
+namespace osrm
+{
+namespace server
+{
+
 namespace http
 {
 
@@ -361,5 +366,7 @@ bool RequestParser::is_special(const int character) const
 bool RequestParser::is_digit(const int character) const
 {
     return character >= '0' && character <= '9';
+}
+}
 }
 }

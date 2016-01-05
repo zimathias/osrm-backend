@@ -26,6 +26,11 @@
 #include <string>
 #include <vector>
 
+namespace osrm
+{
+namespace tools
+{
+
 namespace
 {
 
@@ -227,4 +232,6 @@ int main(int argc, char *argv[])
         SimpleLogger().Write(logWARNING) << "[exception] " << e.what();
     }
     return 0;
+}
+}
 }

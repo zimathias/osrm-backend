@@ -10,6 +10,11 @@
 
 #include <limits>
 
+namespace osrm
+{
+namespace extractor
+{
+
 /// This is what StaticRTree serialized and stores on disk
 /// It is generated in EdgeBasedGraphFactory.
 struct EdgeBasedNode
@@ -84,5 +89,8 @@ struct EdgeBasedNode
     TravelMode forward_travel_mode : 4;
     TravelMode backward_travel_mode : 4;
 };
+
+}
+}
 
 #endif // EDGE_BASED_NODE_HPP

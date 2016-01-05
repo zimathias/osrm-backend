@@ -5,6 +5,11 @@
 #include <mutex>
 #include <sstream>
 
+namespace osrm
+{
+namespace util
+{
+
 enum LogLevel
 {
     logINFO,
@@ -43,5 +48,8 @@ class SimpleLogger
     std::ostringstream os;
     LogLevel level;
 };
+
+}
+}
 
 #endif /* SIMPLE_LOGGER_HPP */

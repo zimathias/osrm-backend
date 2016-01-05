@@ -15,6 +15,8 @@
 
 namespace osrm
 {
+namespace engine
+{
 namespace trip
 {
 
@@ -189,7 +191,8 @@ std::vector<NodeID> FarthestInsertionTrip(const NodeIDIterator &start,
     return FindRoute(number_of_locations, component_size, start, end, dist_table, max_from, max_to);
 }
 
-} // end namespace trip
-} // end namespace osrm
+}
+}
+}
 
 #endif // TRIP_FARTHEST_INSERTION_HPP

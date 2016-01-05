@@ -5,6 +5,11 @@
 
 #include "osrm/coordinate.hpp"
 
+namespace osrm
+{
+namespace engine
+{
+
 osrm::json::String
 PolylineFormatter::printEncodedString(const std::vector<SegmentInformation> &polyline) const
 {
@@ -26,4 +31,6 @@ PolylineFormatter::printUnencodedString(const std::vector<SegmentInformation> &p
         }
     }
     return json_geometry_array;
+}
+}
 }

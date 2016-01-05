@@ -3,6 +3,11 @@
 
 #include <string>
 
+namespace osrm
+{
+namespace server
+{
+
 template <typename Iterator, class HandlerT> struct APIGrammar;
 struct RouteParameters;
 class OSRM;
@@ -28,5 +33,8 @@ class RequestHandler
   private:
     OSRM *routing_machine;
 };
+
+}
+}
 
 #endif // REQUEST_HANDLER_HPP

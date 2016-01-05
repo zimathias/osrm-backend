@@ -9,6 +9,13 @@
 
 #include <string>
 
+namespace osrm
+{
+namespace engine
+{
+namespace plugins
+{
+
 class HelloWorldPlugin final : public BasePlugin
 {
   private:
@@ -75,5 +82,9 @@ class HelloWorldPlugin final : public BasePlugin
   private:
     std::string descriptor_string;
 };
+
+}
+}
+}
 
 #endif // HELLO_WORLD_HPP

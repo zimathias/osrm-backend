@@ -10,6 +10,11 @@
 
 #include <string>
 
+namespace osrm
+{
+namespace tools
+{
+
 int main(int argc, const char *argv[])
 {
     LogPolicy::GetInstance().Unmute();
@@ -67,4 +72,6 @@ int main(int argc, const char *argv[])
         return -1;
     }
     return 0;
+}
+}
 }

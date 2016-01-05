@@ -12,6 +12,11 @@
 #include <memory>
 #include <vector>
 
+namespace osrm
+{
+namespace tools
+{
+
 using EdgeData = QueryEdge::EdgeData;
 using QueryGraph = StaticGraph<EdgeData>;
 
@@ -83,4 +88,6 @@ int main(int argc, char *argv[])
         SimpleLogger().Write(logWARNING) << "[exception] " << e.what();
     }
     return 0;
+}
+}
 }

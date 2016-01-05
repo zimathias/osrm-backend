@@ -7,6 +7,11 @@
 
 #include "osrm/coordinate.hpp"
 
+namespace osrm
+{
+namespace util
+{
+
 // Provides the debug interface for introspection tools
 struct MatchingDebugInfo
 {
@@ -124,5 +129,8 @@ struct MatchingDebugInfo
     const osrm::json::Logger *logger;
     osrm::json::Value *object;
 };
+
+}
+}
 
 #endif // MATCHING_DEBUG_INFO_HPP

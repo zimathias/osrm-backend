@@ -18,6 +18,11 @@
 #include <string>
 #include <vector>
 
+namespace osrm
+{
+namespace extractor
+{
+
 ExtractorCallbacks::ExtractorCallbacks(ExtractionContainers &extraction_containers)
     : external_memory(extraction_containers)
 {
@@ -209,4 +214,6 @@ void ExtractorCallbacks::ProcessWay(const osmium::Way &input_way, const Extracti
              OSMNodeID(input_way.nodes()[input_way.nodes().size() - 2].ref()),
              OSMNodeID(input_way.nodes()[1].ref()), OSMNodeID(input_way.nodes()[0].ref())});
     }
+}
+}
 }

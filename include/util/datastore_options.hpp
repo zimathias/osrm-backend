@@ -13,6 +13,11 @@
 #include <string>
 #include <unordered_map>
 
+namespace osrm
+{
+namespace util
+{
+
 // generate boost::program_options object for the routing part
 bool GenerateDataStoreOptions(const int argc,
                               const char *argv[],
@@ -252,6 +257,9 @@ bool GenerateDataStoreOptions(const int argc,
     }
 
     return true;
+}
+
+}
 }
 
 #endif /* DATASTORE_OPTIONS_HPP */

@@ -12,6 +12,11 @@
 #include <limits>
 #include <string>
 
+namespace osrm
+{
+namespace extractor
+{
+
 bool simple_duration_is_valid(const std::string &s)
 {
     boost::regex simple_format(
@@ -88,6 +93,9 @@ unsigned parseDuration(const std::string &s)
     }
 
     return std::numeric_limits<unsigned>::max();
+}
+
+}
 }
 
 #endif // EXTRACTION_HELPER_FUNCTIONS_HPP

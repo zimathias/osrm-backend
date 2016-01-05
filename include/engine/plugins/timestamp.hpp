@@ -9,6 +9,13 @@
 
 #include <string>
 
+namespace osrm
+{
+namespace engine
+{
+namespace plugins
+{
+
 template <class DataFacadeT> class TimestampPlugin final : public BasePlugin
 {
   public:
@@ -31,5 +38,9 @@ template <class DataFacadeT> class TimestampPlugin final : public BasePlugin
     const DataFacadeT *facade;
     std::string descriptor_string;
 };
+
+}
+}
+}
 
 #endif /* TIMESTAMP_PLUGIN_H */

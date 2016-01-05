@@ -30,6 +30,11 @@
 
 #include "util/debug_geometry.hpp"
 
+namespace osrm
+{
+namespace contractor
+{
+
 Prepare::~Prepare() {}
 
 int Prepare::Run()
@@ -406,4 +411,6 @@ void Prepare::ContractGraph(const unsigned max_edge_id,
     contractor.GetEdges(contracted_edge_list);
     contractor.GetCoreMarker(is_core_node);
     contractor.GetNodeLevels(inout_node_levels);
+}
+}
 }

@@ -13,6 +13,13 @@
 
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+namespace routing_algorithms
+{
+
 const double VIAPATH_ALPHA = 0.10;
 const double VIAPATH_EPSILON = 0.15; // alternative at most 15% longer
 const double VIAPATH_GAMMA = 0.75;   // alternative shares at most 75% with the shortest.
@@ -839,5 +846,9 @@ class AlternativeRouting final
         return (upper_bound <= t_test_path_length);
     }
 };
+
+}
+}
+}
 
 #endif /* ALTERNATIVE_PATH_ROUTING_HPP */

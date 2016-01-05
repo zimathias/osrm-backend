@@ -13,6 +13,11 @@
 #include <utility>
 #include <vector>
 
+namespace osrm
+{
+namespace util
+{
+
 template <typename EdgeDataT, bool UseSharedMemory = false> class StaticGraph
 {
   public:
@@ -188,5 +193,8 @@ template <typename EdgeDataT, bool UseSharedMemory = false> class StaticGraph
     typename ShM<NodeArrayEntry, UseSharedMemory>::vector node_array;
     typename ShM<EdgeArrayEntry, UseSharedMemory>::vector edge_array;
 };
+
+}
+}
 
 #endif // STATIC_GRAPH_HPP

@@ -10,6 +10,11 @@
 
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+
 struct PathData
 {
     PathData()
@@ -56,5 +61,8 @@ struct InternalRouteResult
     {
     }
 };
+
+}
+}
 
 #endif // RAW_ROUTE_DATA_H

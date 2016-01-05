@@ -8,6 +8,11 @@
 #include <exception>
 #include <new>
 
+namespace osrm
+{
+namespace tools
+{
+
 int main(int argc, char *argv[]) try
 {
     LogPolicy::GetInstance().Unmute();
@@ -59,4 +64,6 @@ catch (const std::exception &e)
 {
     SimpleLogger().Write(logWARNING) << "[exception] " << e.what();
     return EXIT_FAILURE;
+}
+}
 }

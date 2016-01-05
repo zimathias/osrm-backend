@@ -20,6 +20,11 @@
 #include <iostream>
 #include <string>
 
+namespace osrm
+{
+namespace server
+{
+
 RequestHandler::RequestHandler() : routing_machine(nullptr) {}
 
 void RequestHandler::handle_request(const http::request &current_request,
@@ -151,3 +156,5 @@ void RequestHandler::handle_request(const http::request &current_request,
 }
 
 void RequestHandler::RegisterRoutingMachine(OSRM *osrm) { routing_machine = osrm; }
+}
+}

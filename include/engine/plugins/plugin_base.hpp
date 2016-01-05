@@ -11,6 +11,13 @@
 #include <string>
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+namespace plugins
+{
+
 class BasePlugin
 {
   public:
@@ -105,5 +112,9 @@ class BasePlugin
         return snapped_phantoms;
     }
 };
+
+}
+}
+}
 
 #endif /* BASE_PLUGIN_HPP */

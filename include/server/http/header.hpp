@@ -4,6 +4,13 @@
 #include <string>
 #include <algorithm>
 
+namespace osrm
+{
+namespace server
+{
+namespace http
+{
+
 namespace http
 {
 struct header
@@ -22,6 +29,10 @@ struct header
     std::string name;
     std::string value;
 };
+}
+
+}
+}
 }
 
 #endif // HEADER_HPP

@@ -11,6 +11,13 @@
 
 #include <string>
 
+namespace osrm
+{
+namespace engine
+{
+namespace plugins
+{
+
 /*
  * This Plugin locates the nearest point on a street in the road network for a given coordinate.
  */
@@ -97,5 +104,9 @@ template <class DataFacadeT> class NearestPlugin final : public BasePlugin
     DataFacadeT *facade;
     std::string descriptor_string;
 };
+
+}
+}
+}
 
 #endif /* NEAREST_HPP */

@@ -8,6 +8,8 @@
 
 namespace osrm
 {
+namespace util
+{
 namespace json
 {
 
@@ -72,5 +74,7 @@ osrm::json::Value &get(osrm::json::Value &value, unsigned key, Keys... keys)
 }
 
 } // namespace json
+} // namespace util
 } // namespace osrm
+
 #endif // JSON_UTIL_HPP

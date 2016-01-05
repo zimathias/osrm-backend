@@ -13,6 +13,11 @@
 #include <unordered_map>
 #include <iterator>
 
+namespace osrm
+{
+namespace extractor
+{
+
 /**
     \brief Small wrapper around raster source queries to optionally provide results
     gracefully, depending on source bounds
@@ -144,5 +149,8 @@ class SourceContainer
     std::vector<RasterSource> LoadedSources;
     std::unordered_map<std::string, int> LoadedSourcePaths;
 };
+
+}
+}
 
 #endif /* RASTER_SOURCE_HPP */

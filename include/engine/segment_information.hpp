@@ -9,6 +9,11 @@
 #include "osrm/coordinate.hpp"
 #include <utility>
 
+namespace osrm
+{
+namespace engine
+{
+
 // Struct fits everything in one cache line
 struct SegmentInformation
 {
@@ -50,5 +55,8 @@ struct SegmentInformation
     {
     }
 };
+
+}
+}
 
 #endif /* SEGMENT_INFORMATION_HPP */

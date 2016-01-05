@@ -17,6 +17,11 @@
 #include <osmium/osm.hpp>
 
 #include <sstream>
+
+namespace osrm
+{
+namespace extractor
+{
 namespace
 {
 // wrapper method as luabind doesn't automatically overload funcs w/ default parameters
@@ -140,4 +145,6 @@ lua_State *ScriptingEnvironment::GetLuaState()
     luabind::set_pcall_callback(&luaErrorCallback);
 
     return ref.get();
+}
+}
 }

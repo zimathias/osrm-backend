@@ -9,6 +9,13 @@
 
 #include <iostream>
 
+namespace osrm
+{
+namespace engine
+{
+namespace descriptors
+{
+
 
 
 template <class DataFacadeT> class GPXDescriptor final : public BaseDescriptor<DataFacadeT>
@@ -75,4 +82,8 @@ template <class DataFacadeT> class GPXDescriptor final : public BaseDescriptor<D
         json_result.values["route"] = json_route;
     }
 };
+}
+}
+}
+
 #endif // GPX_DESCRIPTOR_HPP

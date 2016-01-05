@@ -15,6 +15,11 @@
 #include <tuple>
 #include <vector>
 
+namespace osrm
+{
+namespace util
+{
+
 template <typename EdgeDataT> class DynamicGraph
 {
   public:
@@ -315,5 +320,8 @@ template <typename EdgeDataT> class DynamicGraph
     std::vector<Node> node_array;
     DeallocatingVector<Edge> edge_list;
 };
+
+}
+}
 
 #endif // DYNAMICGRAPH_HPP

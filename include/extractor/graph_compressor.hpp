@@ -9,6 +9,11 @@
 #include <memory>
 #include <unordered_set>
 
+namespace osrm
+{
+namespace extractor
+{
+
 class CompressedEdgeContainer;
 class RestrictionMap;
 
@@ -32,5 +37,8 @@ class GraphCompressor
 
     SpeedProfileProperties speed_profile;
 };
+
+}
+}
 
 #endif

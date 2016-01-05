@@ -4,6 +4,11 @@
 
 #include <iostream>
 
+namespace osrm
+{
+namespace tools
+{
+
 int main()
 {
     LogPolicy::GetInstance().Unmute();
@@ -21,4 +26,6 @@ int main()
         SimpleLogger().Write(logWARNING) << "[excpetion] " << e.what();
     }
     return 0;
+}
+}
 }

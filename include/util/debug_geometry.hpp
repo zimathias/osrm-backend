@@ -47,6 +47,11 @@ inline void DEBUG_TURNS_STOP() {}
 #include "util/coordinate.hpp"
 #include "util/coordinate_calculation.hpp"
 
+namespace osrm
+{
+namespace util
+{
+
 boost::filesystem::ofstream debug_geometry_file;
 bool dg_output_debug_geometry = false;
 bool dg_first_debug_geometry = true;
@@ -195,5 +200,8 @@ inline void DEBUG_TURNS_STOP()
 }
 
 #endif // DEBUG_GEOMETRY
+
+}
+}
 
 #endif // DEBUG_GEOMETRY_H

@@ -19,6 +19,13 @@
 #include <limits>
 #include <memory>
 
+namespace osrm
+{
+namespace engine
+{
+namespace datafacade
+{
+
 template <class EdgeDataT> class SharedDataFacade final : public BaseDataFacade<EdgeDataT>
 {
 
@@ -445,5 +452,9 @@ template <class EdgeDataT> class SharedDataFacade final : public BaseDataFacade<
 
     std::string GetTimestamp() const override final { return m_timestamp; }
 };
+
+}
+}
+}
 
 #endif // SHARED_DATAFACADE_HPP

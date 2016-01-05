@@ -9,6 +9,11 @@
 
 #include <tbb/task_scheduler_init.h>
 
+namespace osrm
+{
+namespace extractor
+{
+
 return_code
 ExtractorOptions::ParseArguments(int argc, char *argv[], ExtractorConfig &extractor_config)
 {
@@ -204,4 +209,6 @@ void ExtractorOptions::GenerateOutputFilesNames(ExtractorConfig &extractor_confi
         extractor_config.edge_segment_lookup_path.replace(pos, 8, ".osrm.edge_segment_lookup");
         extractor_config.edge_penalty_path.replace(pos, 8, ".osrm.edge_penalties");
     }
+}
+}
 }

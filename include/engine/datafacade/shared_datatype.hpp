@@ -8,6 +8,13 @@
 
 #include <array>
 
+namespace osrm
+{
+namespace engine
+{
+namespace datafacade
+{
+
 namespace
 {
 // Added at the start and end of each block as sanity check
@@ -164,5 +171,9 @@ struct SharedDataTimestamp
     SharedDataType data;
     unsigned timestamp;
 };
+
+}
+}
+}
 
 #endif /* SHARED_DATA_TYPE_HPP */

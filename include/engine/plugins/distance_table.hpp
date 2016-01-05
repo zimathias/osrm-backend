@@ -22,6 +22,13 @@
 #include <string>
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+namespace plugins
+{
+
 template <class DataFacadeT> class DistanceTablePlugin final : public BasePlugin
 {
   private:
@@ -218,5 +225,9 @@ template <class DataFacadeT> class DistanceTablePlugin final : public BasePlugin
     std::string descriptor_string;
     DataFacadeT *facade;
 };
+
+}
+}
+}
 
 #endif // DISTANCE_TABLE_HPP

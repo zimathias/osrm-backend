@@ -24,6 +24,11 @@
 #include <algorithm>
 #include <exception>
 
+namespace osrm
+{
+namespace datastore
+{
+
 struct OSRMLockFile
 {
     boost::filesystem::path operator()()
@@ -351,5 +356,8 @@ template <class LockFileT = OSRMLockFile> class SharedMemoryFactory_tmpl
 };
 
 using SharedMemoryFactory = SharedMemoryFactory_tmpl<>;
+
+}
+}
 
 #endif // SHARED_MEMORY_FACTORY_HPP

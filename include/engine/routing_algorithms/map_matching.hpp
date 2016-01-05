@@ -19,7 +19,9 @@
 
 namespace osrm
 {
-namespace matching
+namespace engine
+{
+namespace routing_algorithms
 {
 
 struct SubMatching
@@ -39,8 +41,6 @@ constexpr static const unsigned MAX_BROKEN_STATES = 10;
 
 constexpr static const double MAX_SPEED = 180 / 3.6; // 180km -> m/s
 constexpr static const unsigned SUSPICIOUS_DISTANCE_DELTA = 100;
-}
-}
 
 // implements a hidden markov model map matching algorithm
 template <class DataFacadeT>
@@ -356,6 +356,10 @@ class MapMatching final : public BasicRoutingInterface<DataFacadeT, MapMatching<
         matching_debug.add_breakage(model.breakage);
     }
 };
+
+}
+}
+}
 
 //[1] "Hidden Markov Map Matching Through Noise and Sparseness"; P. Newson and J. Krumm; 2009; ACM
 // GIS

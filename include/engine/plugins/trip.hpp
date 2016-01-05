@@ -30,6 +30,13 @@
 #include <vector>
 #include <iterator>
 
+namespace osrm
+{
+namespace engine
+{
+namespace plugins
+{
+
 template <class DataFacadeT> class RoundTripPlugin final : public BasePlugin
 {
   private:
@@ -369,5 +376,9 @@ template <class DataFacadeT> class RoundTripPlugin final : public BasePlugin
         return Status::Ok;
     }
 };
+
+}
+}
+}
 
 #endif // TRIP_HPP

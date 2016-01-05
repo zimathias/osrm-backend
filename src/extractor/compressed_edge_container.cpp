@@ -10,6 +10,11 @@
 
 #include <iostream>
 
+namespace osrm
+{
+namespace extractor
+{
+
 CompressedEdgeContainer::CompressedEdgeContainer()
 {
     m_free_list.reserve(100);
@@ -211,4 +216,6 @@ NodeID CompressedEdgeContainer::GetLastEdgeSourceID(const EdgeID edge_id) const
     const auto &bucket = GetBucketReference(edge_id);
     BOOST_ASSERT(bucket.size() >= 2);
     return bucket[bucket.size() - 2].first;
+}
+}
 }

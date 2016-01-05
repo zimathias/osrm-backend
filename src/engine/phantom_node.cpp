@@ -5,6 +5,11 @@
 
 #include <limits>
 
+namespace osrm
+{
+namespace engine
+{
+
 PhantomNode::PhantomNode(NodeID forward_node_id,
                          NodeID reverse_node_id,
                          unsigned name_id,
@@ -74,3 +79,5 @@ bool PhantomNode::is_valid(const unsigned number_of_nodes) const
 bool PhantomNode::IsValid() const { return location.IsValid() && (name_id != INVALID_NAMEID); }
 
 bool PhantomNode::operator==(const PhantomNode &other) const { return location == other.location; }
+}
+}

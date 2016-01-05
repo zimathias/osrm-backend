@@ -10,6 +10,8 @@
 
 namespace osrm
 {
+namespace util
+{
 namespace json
 {
 
@@ -53,6 +55,8 @@ class Logger
 
     boost::thread_specific_ptr<MapT> map;
 };
+
+}
 }
 }
 

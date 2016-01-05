@@ -8,6 +8,13 @@
 #include "util/integer_range.hpp"
 #include "util/typedefs.hpp"
 
+namespace osrm
+{
+namespace engine
+{
+namespace descriptors
+{
+
 DescriptionFactory::DescriptionFactory() : entire_length(0) { via_indices.push_back(0); }
 
 std::vector<unsigned> const &DescriptionFactory::GetViaIndices() const { return via_indices; }
@@ -221,4 +228,7 @@ void DescriptionFactory::Run(const unsigned zoom_level)
     via_indices.push_back(necessary_segments);
     BOOST_ASSERT(via_indices.size() >= 2);
     return;
+}
+}
+}
 }

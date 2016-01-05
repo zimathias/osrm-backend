@@ -5,6 +5,13 @@
 
 #include <string>
 
+namespace osrm
+{
+namespace server
+{
+namespace http
+{
+
 namespace http
 {
 
@@ -17,5 +24,9 @@ struct request
 };
 
 } // namespace http
+
+}
+}
+}
 
 #endif // REQUEST_HPP

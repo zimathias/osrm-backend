@@ -22,6 +22,13 @@
 #include <string>
 #include <vector>
 
+namespace osrm
+{
+namespace engine
+{
+namespace plugins
+{
+
 template <class DataFacadeT> class MapMatchingPlugin : public BasePlugin
 {
     constexpr static const unsigned max_number_of_candidates = 10;
@@ -386,5 +393,9 @@ template <class DataFacadeT> class MapMatchingPlugin : public BasePlugin
     int max_locations_map_matching;
     ClassifierT classifier;
 };
+
+}
+}
+}
 
 #endif // MATCH_HPP

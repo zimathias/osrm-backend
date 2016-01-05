@@ -36,6 +36,11 @@ using QueryGraph = StaticGraph<QueryEdge::EdgeData>;
 #include <new>
 #include <string>
 
+namespace osrm
+{
+namespace tools
+{
+
 // delete a shared memory region. report warning if it could not be deleted
 void deleteRegion(const SharedDataType region)
 {
@@ -568,4 +573,6 @@ catch (const std::bad_alloc &e)
 catch (const std::exception &e)
 {
     SimpleLogger().Write(logWARNING) << "caught exception: " << e.what();
+}
+}
 }

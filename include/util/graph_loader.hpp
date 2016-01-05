@@ -22,6 +22,11 @@
 #include <ios>
 #include <vector>
 
+namespace osrm
+{
+namespace util
+{
+
 /**
  * Reads the .restrictions file and loads it to a vector.
  * The since the restrictions reference nodes using their external node id,
@@ -190,6 +195,9 @@ unsigned readHSGRFromStream(const boost::filesystem::path &hsgr_file,
     hsgr_input_stream.close();
 
     return number_of_nodes;
+}
+
+}
 }
 
 #endif // GRAPH_LOADER_HPP

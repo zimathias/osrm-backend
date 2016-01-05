@@ -12,6 +12,11 @@
 #include <memory>
 #include <algorithm>
 
+namespace osrm
+{
+namespace engine
+{
+
 // Implements complex queries on top of an RTree and builds PhantomNodes from it.
 //
 // Only holds a weak reference on the RTree!
@@ -178,5 +183,8 @@ template <typename RTreeT> class GeospatialQuery
     RTreeT &rtree;
     const std::shared_ptr<CoordinateList> coordinates;
 };
+
+}
+}
 
 #endif

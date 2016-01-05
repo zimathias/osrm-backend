@@ -21,6 +21,13 @@
 #include <algorithm>
 #include <string>
 
+namespace osrm
+{
+namespace engine
+{
+namespace descriptors
+{
+
 template <class DataFacadeT> class JSONDescriptor final : public BaseDescriptor<DataFacadeT>
 {
   private:
@@ -375,5 +382,9 @@ template <class DataFacadeT> class JSONDescriptor final : public BaseDescriptor<
         return json_instruction_array;
     }
 };
+
+}
+}
+}
 
 #endif /* JSON_DESCRIPTOR_H_ */

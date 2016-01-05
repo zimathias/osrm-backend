@@ -9,6 +9,11 @@
 #include <iostream>
 #include <random>
 
+namespace osrm
+{
+namespace benchmarks
+{
+
 // Choosen by a fair W20 dice roll (this value is completely arbitrary)
 constexpr unsigned RANDOM_SEED = 13;
 constexpr int32_t WORLD_MIN_LAT = -90 * COORDINATE_PRECISION;
@@ -124,4 +129,6 @@ int main(int argc, char **argv)
     benchmark(rtree, query, 10000);
 
     return 0;
+}
+}
 }

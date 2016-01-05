@@ -24,6 +24,11 @@
 #include <chrono>
 #include <limits>
 
+namespace osrm
+{
+namespace extractor
+{
+
 static const int WRITE_BLOCK_BUFFER_SIZE = 8000;
 
 ExtractionContainers::ExtractionContainers()
@@ -719,4 +724,6 @@ void ExtractionContainers::PrepareRestrictions()
     }
     TIMER_STOP(fix_restriction_ends);
     std::cout << "ok, after " << TIMER_SEC(fix_restriction_ends) << "s" << std::endl;
+}
+}
 }

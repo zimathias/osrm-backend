@@ -16,6 +16,11 @@ struct lua_State;
 
 #include <vector>
 
+namespace osrm
+{
+namespace contractor
+{
+
 /**
     \brief class of 'prepare' utility.
  */
@@ -53,5 +58,8 @@ class Prepare
                                       const std::string &edge_penalty_path,
                                       const std::string &segment_speed_path);
 };
+
+}
+}
 
 #endif // PROCESSING_CHAIN_HPP

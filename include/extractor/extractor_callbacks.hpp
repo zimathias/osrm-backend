@@ -7,6 +7,11 @@
 #include <string>
 #include <unordered_map>
 
+namespace osrm
+{
+namespace extractor
+{
+
 struct ExternalMemoryNode;
 class ExtractionContainers;
 struct InputRestrictionContainer;
@@ -46,5 +51,8 @@ class ExtractorCallbacks
     // warning: caller needs to take care of synchronization!
     void ProcessWay(const osmium::Way &current_way, const ExtractionWay &result_way);
 };
+
+}
+}
 
 #endif /* EXTRACTOR_CALLBACKS_HPP */

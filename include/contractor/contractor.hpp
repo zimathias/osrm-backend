@@ -26,6 +26,11 @@
 #include <memory>
 #include <vector>
 
+namespace osrm
+{
+namespace contractor
+{
+
 class Contractor
 {
 
@@ -1062,5 +1067,8 @@ class Contractor
     std::vector<bool> is_core_node;
     XORFastHash fast_hash;
 };
+
+}
+}
 
 #endif // CONTRACTOR_HPP
