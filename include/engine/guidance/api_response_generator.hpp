@@ -102,13 +102,11 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
 
     if (config.geometry)
     {
-	  std::cout << "Calculating Geometry" << std::endl;
         json_result.values["route_geometry"] = getGeometry(config.encode_geometry, segment_list);
     }
 
     if (config.instructions)
     {
-	  std::cout << "Calculating Instructions" << std::endl;
         json_result.values["route_instructions"] = AnnotateRoute(segment_list.Get(), facade);
     }
 
@@ -117,7 +115,6 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
 
     if (raw_route.has_alternative())
     {
-	  std::cout << "Calculating Alternative Information" << std::endl;
         SegmentListT alternate_segment_list(raw_route, true, config.zoom_level, facade);
 
         // Alternative Route Summaries are stored in an array to (down the line) allow multiple
@@ -163,19 +160,15 @@ void ApiResponseGenerator<DataFacadeT>::DescribeRoute(const DescriptorConfig &co
         // generate names for the main route on its own
         auto path_segments = BuildRouteSegments(segment_list);
         std::vector<detail::Segment> alternate_segments;
-		std::cout << "Generating Route Names." << std::endl;
         route_names = GenerateRouteNames(path_segments, alternate_segments, facade);
-		std::cout << "done." << std::endl;
     }
 
-	std::cout << "Calculating Route Names and Hints" << std::endl;
     osrm::json::Array json_route_names;
     json_route_names.values.push_back(route_names.shortest_path_name_1);
     json_route_names.values.push_back(route_names.shortest_path_name_2);
     json_result.values["route_name"] = json_route_names;
 
     json_result.values["hint_data"] = BuildHintData(raw_route);
-	std::cout << "Done." << std::endl;
 }
 
 template <typename DataFacadeT>

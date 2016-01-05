@@ -278,8 +278,6 @@ void SegmentList<DataFacadeT>::Finalize(bool extract_alternative,
 
     // calculate which segments are necessary and update segments for bearings
     osrm::for_each_pair(segments, markNecessarySegments);
-    std::cout << "necessary segments: " << necessary_segments << " of " << segments.size()
-              << std::endl;
     via_indices.push_back(necessary_segments);
 
     BOOST_ASSERT(via_indices.size() >= 2);

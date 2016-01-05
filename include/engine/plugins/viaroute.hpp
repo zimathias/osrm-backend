@@ -144,30 +144,22 @@ template <class DataFacadeT> class ViaRoutePlugin final : public BasePlugin
 
         bool no_route = INVALID_EDGE_WEIGHT == raw_route.shortest_path_length;
 
-		#if 0
-        std::unique_ptr<BaseDescriptor<DataFacadeT>> descriptor;
         switch (descriptor_table.get_id(route_parameters.output_format))
         {
         case 1:
-            descriptor = osrm::make_unique<GPXDescriptor<DataFacadeT>>(facade);
+			{
+			  GPXDescriptor<DataFacadeT> descriptor(facade);
+			  descriptor.SetConfig(route_parameters);
+			  descriptor.Run(raw_route,json_result);
+			}
             break;
-        // case 2:
-        //      descriptor = osrm::make_unique<GEOJSONDescriptor<DataFacadeT>>();
-        //      break;
         default:
-            descriptor = osrm::make_unique<JSONDescriptor<DataFacadeT>>(facade);
+			{
+			  osrm::engine::route::description::ApiResponseGenerator<DataFacadeT> generator( facade );
+			  generator.DescribeRoute( route_parameters, raw_route, json_result );
+			}
             break;
         }
-
-        descriptor->SetConfig(route_parameters);
-        descriptor->Run(raw_route, json_result);
-		#else
-		osrm::engine::route::description::ApiResponseGenerator<DataFacadeT> generator( facade );
-		generator.DescribeRoute( route_parameters, raw_route, json_result );
-		#endif
-		osrm::json::Renderer renderer( std::cout );
-		renderer( json_result );
-		std::cout << std::endl;
 
         // we can only know this after the fact, different SCC ids still
         // allow for connection in one direction.
